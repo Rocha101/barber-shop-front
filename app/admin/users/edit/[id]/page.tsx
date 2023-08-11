@@ -22,6 +22,7 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 const formSchema = z.object({
+  id: z.number(),
   username: z
     .string({
       required_error: "Nome obrigatório",
@@ -50,6 +51,7 @@ const EditUser = ({ params }: { params: { id: string } }) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      id: 0,
       email: "",
       password: "",
       username: "",
@@ -64,8 +66,9 @@ const EditUser = ({ params }: { params: { id: string } }) => {
       },
     };
     axios
-      .put("http://localhost:8080/api/barbers/" + params.id, values, config)
+      .put("http://localhost:8080/api/barbers", values, config)
       .then((res) => {
+        console.log(res);
         toast({
           title: "Você foi cadastrado com sucesso!",
         });
@@ -95,6 +98,10 @@ const EditUser = ({ params }: { params: { id: string } }) => {
           title: "Não foi possível carregar o usuário",
         });
       });
+  }, [form, params.id]);
+
+  useEffect(() => {
+    form.setValue("id", +params.id);
   }, [form, params.id]);
 
   return (
