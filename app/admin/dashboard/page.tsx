@@ -1,11 +1,12 @@
 import { Button } from "@/components/ui/button";
-import Image from "next/image";
 import Link from "next/link";
 
-export default function Home() {
+const Dashboard = () => {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-24 gap-10">
-      <h1 className="text-5xl font-bold">Barber Shop Management</h1>
+    <div className="flex min-h-screen flex-col items-center justify-center p-24 gap-10">
+      <h1 className="text-3xl font-bold">
+        Seja Bem-vindo (a) ao Barber Shop Manager!
+      </h1>
       <div className="flex gap-4">
         <Link href="/register" passHref>
           <Button size="lg" variant="outline">
@@ -16,6 +17,8 @@ export default function Home() {
           <Button size="lg">Login</Button>
         </Link>
       </div>
-    </main>
+    </div>
   );
-}
+};
+
+export default Dashboard;
