@@ -1,21 +1,19 @@
+"use client";
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
 import Link from "next/link";
 
 const Dashboard = () => {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center p-24 gap-10">
+    <div className="h-full flex flex-col items-center justify-center p-10 gap-10">
       <h1 className="text-3xl font-bold">
-        Seja Bem-vindo (a) ao Barber Shop Manager!
+        Seja Bem-vindo (a){" "}
+        {JSON.parse(
+          sessionStorage.getItem("user") || "{}"
+        )?.username.toUpperCase()}
       </h1>
-      <div className="flex gap-4">
-        <Link href="/register" passHref>
-          <Button size="lg" variant="outline">
-            Register
-          </Button>
-        </Link>
-        <Link href="/login" passHref>
-          <Button size="lg">Login</Button>
-        </Link>
+      <div className="flex">
+        <Image src="/logo.png" width={250} height={250} alt={""} />
       </div>
     </div>
   );
