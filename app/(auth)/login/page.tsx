@@ -61,6 +61,9 @@ const Login = () => {
       })
       .catch((err) => {
         console.log(err);
+        toast({
+          title: "Não foi possível realizar o login",
+        });
       });
   }
 

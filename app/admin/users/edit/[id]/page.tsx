@@ -16,10 +16,14 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
-import { AiOutlineArrowLeft } from "react-icons/ai";
+import {
+  AiOutlineArrowLeft,
+  AiOutlineEye,
+  AiOutlineEyeInvisible,
+} from "react-icons/ai";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const formSchema = z.object({
   id: z.number(),
@@ -58,6 +62,9 @@ const EditUser = ({ params }: { params: { id: string } }) => {
       phone: "",
     },
   });
+
+  const [visiblePass, setVisiblePass] = useState(false);
+
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
     const config = {
@@ -169,10 +176,28 @@ const EditUser = ({ params }: { params: { id: string } }) => {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Password</FormLabel>
-                  <FormControl>
-                    <Input type="password" placeholder="********" {...field} />
-                  </FormControl>
+                  <FormLabel>Senha</FormLabel>
+                  <div className="flex items-center gap-3">
+                    <FormControl>
+                      <Input
+                        type={visiblePass ? "text" : "password"}
+                        placeholder="********"
+                        {...field}
+                      />
+                    </FormControl>
+                    <Button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setVisiblePass(!visiblePass);
+                      }}
+                    >
+                      {visiblePass ? (
+                        <AiOutlineEye />
+                      ) : (
+                        <AiOutlineEyeInvisible />
+                      )}
+                    </Button>
+                  </div>
                   <FormMessage />
                 </FormItem>
               )}

@@ -13,31 +13,43 @@ import { toast } from "@/components/ui/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import Link from "next/link";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import * as z from "zod";
 
-const formSchema = z.object({
-  username: z
-    .string({
-      required_error: "Nome obrigatório",
-    })
-    .min(3, { message: "Nome deve ter no mínimo 3 caracteres" }),
-  phone: z
-    .string({
-      required_error: "Telefone obrigatório",
-    })
-    .min(10, { message: "Telefone inválido" }),
-  email: z
-    .string({
-      required_error: "Email obrigatório",
-    })
-    .email({ message: "Email inválido" }),
-  password: z
-    .string({
-      required_error: "Senha obrigatória",
-    })
-    .min(6, { message: "Senha deve ter no mínimo 6 caracteres" }),
-});
+const formSchema = z
+  .object({
+    username: z
+      .string({
+        required_error: "Nome obrigatório",
+      })
+      .min(3, { message: "Nome deve ter no mínimo 3 caracteres" }),
+    phone: z
+      .string({
+        required_error: "Telefone obrigatório",
+      })
+      .min(10, { message: "Telefone inválido" }),
+    email: z
+      .string({
+        required_error: "Email obrigatório",
+      })
+      .email({ message: "Email inválido" }),
+    password: z
+      .string({
+        required_error: "Senha obrigatória",
+      })
+      .min(6, { message: "Senha deve ter no mínimo 6 caracteres" }),
+    confirmPassword: z
+      .string({
+        required_error: "Senha obrigatória",
+      })
+      .min(6, { message: "Senha deve ter no mínimo 6 caracteres" }),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Senhas não conferem",
+    path: ["confirmPassword"],
+  });
 
 const Login = () => {
   const form = useForm<z.infer<typeof formSchema>>({
@@ -47,8 +59,13 @@ const Login = () => {
       password: "",
       username: "",
       phone: "",
+      confirmPassword: "",
     },
   });
+
+  const [visiblePass, setVisiblePass] = useState(false);
+  const [visibleConfirmPass, setVisibleConfirmPass] = useState(false);
+
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
     const config = {
@@ -56,8 +73,14 @@ const Login = () => {
         "Content-Type": "application/json",
       },
     };
+    const data = {
+      username: values.username,
+      email: values.email,
+      phone: values.phone,
+      password: values.password,
+    };
     axios
-      .post("http://localhost:8080/api/barbers", values, config)
+      .post("http://localhost:8080/api/barbers", data, config)
       .then((res) => {
         toast({
           title: "Você foi cadastrado com sucesso!",
@@ -126,10 +149,59 @@ const Login = () => {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Password</FormLabel>
-                  <FormControl>
-                    <Input type="password" placeholder="********" {...field} />
-                  </FormControl>
+                  <FormLabel>Senha</FormLabel>
+                  <div className="flex items-center gap-3">
+                    <FormControl>
+                      <Input
+                        type={visiblePass ? "text" : "password"}
+                        placeholder="********"
+                        {...field}
+                      />
+                    </FormControl>
+                    <Button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setVisiblePass(!visiblePass);
+                      }}
+                    >
+                      {visiblePass ? (
+                        <AiOutlineEye />
+                      ) : (
+                        <AiOutlineEyeInvisible />
+                      )}
+                    </Button>
+                  </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="confirmPassword"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Confirmar senha</FormLabel>
+                  <div className="flex items-center gap-3">
+                    <FormControl>
+                      <Input
+                        type={visibleConfirmPass ? "text" : "password"}
+                        placeholder="********"
+                        {...field}
+                      />
+                    </FormControl>
+                    <Button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setVisibleConfirmPass(!visibleConfirmPass);
+                      }}
+                    >
+                      {visibleConfirmPass ? (
+                        <AiOutlineEye />
+                      ) : (
+                        <AiOutlineEyeInvisible />
+                      )}
+                    </Button>
+                  </div>
                   <FormMessage />
                 </FormItem>
               )}
