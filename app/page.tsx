@@ -9,7 +9,7 @@ export default function Home() {
       <div className="flex gap-4">
         <Link href="/register" passHref>
           <Button size="lg" variant="outline">
-            Register
+            Quero me registrar
           </Button>
         </Link>
         <Link href="/login" passHref>

@@ -1,8 +1,11 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 
 const Services = () => {
+  const router = useRouter();
+
   const [service, setService] = useState([
     {
       name: "",
@@ -17,7 +20,7 @@ const Services = () => {
         <h2 className="text-lg font-bold">Serviços</h2>
         <Button
           onClick={() => {
-            setService([...service, { name: "", description: "", icon: "" }]);
+            router.push("/admin/services/new");
           }}
         >
           Novo Serviço
