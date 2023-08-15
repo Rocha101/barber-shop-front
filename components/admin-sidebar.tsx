@@ -16,7 +16,15 @@ import {
 } from "./ui/command";
 import { Toggle } from "./ui/toggle";
 import { useToast } from "./ui/use-toast";
-import { AiOutlineSearch, AiFillHome, AiOutlineUser } from "react-icons/ai";
+import {
+  AiOutlineSearch,
+  AiFillHome,
+  AiOutlineUser,
+  AiOutlineDropbox,
+  AiOutlineScissor,
+} from "react-icons/ai";
+import { BsFillCalendar2CheckFill } from "react-icons/bs";
+import { BiSolidReport } from "react-icons/bi";
 import {
   TbLayoutSidebarLeftExpand,
   TbLayoutSidebarLeftCollapse,
@@ -33,6 +41,30 @@ const links = [
     href: "/admin/users",
     label: "Usuários",
     icon: <AiOutlineUser />,
+    admin: true,
+  },
+  {
+    href: "/admin/products",
+    label: "Produtos",
+    icon: <AiOutlineDropbox />,
+    admin: true,
+  },
+  {
+    href: "/admin/schedules",
+    label: "Agendamentos",
+    icon: <BsFillCalendar2CheckFill />,
+    admin: true,
+  },
+  {
+    href: "/admin/services",
+    label: "Serviços",
+    icon: <AiOutlineScissor />,
+    admin: true,
+  },
+  {
+    href: "/admin/reports",
+    label: "Relatórios",
+    icon: <BiSolidReport />,
     admin: true,
   },
 ];
