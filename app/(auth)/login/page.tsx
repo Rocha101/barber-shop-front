@@ -16,6 +16,8 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { useRouter } from "next/navigation";
 import { toast } from "@/components/ui/use-toast";
+import { useState } from "react";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
 const formSchema = z.object({
   email: z
@@ -41,6 +43,8 @@ const Login = () => {
     },
   });
 
+  const [visiblePass, setVisiblePass] = useState(false);
+
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
     const config = {
@@ -56,6 +60,7 @@ const Login = () => {
         sessionStorage.setItem("user", JSON.stringify(res.data.data));
         toast({
           title: "Login realizado com sucesso!",
+          description: "Redirecionando...",
         });
         router.push("/admin/dashboard");
       })
@@ -95,9 +100,27 @@ const Login = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Senha</FormLabel>
-                  <FormControl>
-                    <Input type="password" placeholder="********" {...field} />
-                  </FormControl>
+                  <div className="flex items-center gap-3">
+                    <FormControl>
+                      <Input
+                        type={visiblePass ? "text" : "password"}
+                        placeholder="********"
+                        {...field}
+                      />
+                    </FormControl>
+                    <Button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setVisiblePass(!visiblePass);
+                      }}
+                    >
+                      {visiblePass ? (
+                        <AiOutlineEye />
+                      ) : (
+                        <AiOutlineEyeInvisible />
+                      )}
+                    </Button>
+                  </div>
                   <FormMessage />
                 </FormItem>
               )}
