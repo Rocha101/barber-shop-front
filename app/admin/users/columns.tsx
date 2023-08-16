@@ -9,6 +9,14 @@ import { AiFillDelete, AiOutlineDelete } from "react-icons/ai";
 import { BiSolidTrashAlt, BiTrashAlt } from "react-icons/bi";
 import axios from "axios";
 import { toast } from "@/components/ui/use-toast";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 export type Users = {
   id: string;
@@ -17,8 +25,6 @@ export type Users = {
   phone: string;
   password: string;
 };
-
-const actionButtons = [{ icon: "Editar", label: "Editar" }];
 
 const removeUser = (id: number) => {
   axios
@@ -71,14 +77,31 @@ export const columns: ColumnDef<Users>[] = [
               Editar
             </Button>
           </Link>
-          <Button
-            variant="destructive"
-            key="Apagar"
-            className="h-7 w-7 p-0"
-            onClick={() => removeUser(row.getValue("id"))}
-          >
-            <BiSolidTrashAlt />
-          </Button>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button
+                variant="destructive"
+                key="Apagar"
+                className="h-7 w-7 p-0"
+              >
+                <BiSolidTrashAlt />
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogTitle>Tem certeza que deseja apagar?</DialogTitle>
+              <DialogDescription>
+                Essa ação não poderá ser desfeita.
+              </DialogDescription>
+              <DialogFooter>
+                <DialogTrigger asChild>
+                  <Button variant="link">Cancelar</Button>
+                </DialogTrigger>
+                <Button onClick={() => removeUser(row.getValue("id"))}>
+                  Confirmar
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </div>
       );
     },

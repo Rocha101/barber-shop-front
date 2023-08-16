@@ -36,7 +36,8 @@ const formSchema = z.object({
     .string({
       required_error: "Telefone obrigatório",
     })
-    .min(10, { message: "Telefone inválido" }),
+    .min(10, { message: "Telefone deve ter no mínimo 10 caracteres" })
+    .max(11, { message: "Telefone deve ter no máximo 11 caracteres" }),
   email: z
     .string({
       required_error: "Email obrigatório",
