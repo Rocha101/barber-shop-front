@@ -33,39 +33,41 @@ const SchedulesPage = () => {
           <TabsTrigger value="weekly">Semanal</TabsTrigger>
         </TabsList>
         <TabsContent value="monthly">
-          <MonthlyCalendar
-            currentMonth={currentMonth}
-            onCurrentMonthChange={(date) => setCurrentMonth(date)}
-            locale={ptBR}
-          >
-            <MonthlyNav />
-            <MonthlyBody
-              events={[
-                {
-                  title: "Barba - Cliente: José",
-                  date: subHours(new Date(), 2),
-                },
-                {
-                  title: "Barba - Cliente: João",
-                  date: subHours(new Date(), 1),
-                },
-                { title: "Degradê - Cliente: Bob", date: new Date() },
-              ]}
+          <div className="border p-3 rounded-md">
+            <MonthlyCalendar
+              currentMonth={currentMonth}
+              onCurrentMonthChange={(date) => setCurrentMonth(date)}
+              locale={ptBR}
             >
-              <MonthlyDay<any>
-                renderDay={(data) =>
-                  data.map((item, index) => (
-                    <DefaultMonthlyEventItem
-                      key={index}
-                      title={item.title}
-                      // Format the date here to be in the format you prefer
-                      date={format(item.date, "k:mm", { locale: ptBR })}
-                    />
-                  ))
-                }
-              />
-            </MonthlyBody>
-          </MonthlyCalendar>
+              <MonthlyNav />
+              <MonthlyBody
+                events={[
+                  {
+                    title: "Barba - Cliente: José",
+                    date: subHours(new Date(), 2),
+                  },
+                  {
+                    title: "Barba - Cliente: João",
+                    date: subHours(new Date(), 1),
+                  },
+                  { title: "Degradê - Cliente: Bob", date: new Date() },
+                ]}
+              >
+                <MonthlyDay<any>
+                  renderDay={(data) =>
+                    data.map((item, index) => (
+                      <DefaultMonthlyEventItem
+                        key={index}
+                        title={item.title}
+                        // Format the date here to be in the format you prefer
+                        date={format(item.date, "k:mm", { locale: ptBR })}
+                      />
+                    ))
+                  }
+                />
+              </MonthlyBody>
+            </MonthlyCalendar>
+          </div>
         </TabsContent>
         <TabsContent value="weekly">
           <div className="border p-3 bg-slate-100 rounded-md">
