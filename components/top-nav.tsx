@@ -82,7 +82,7 @@ const TopNav = () => {
             <Button
               variant="ghost"
               size="sm"
-              className="mr-2 flex items-center"
+              className="mr-2 flex items-center md:hidden"
             >
               <AiOutlineMenu className="h-5 w-5" />
               <span className="hidden md:flex"></span>
