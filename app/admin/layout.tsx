@@ -10,9 +10,9 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     const token = sessionStorage.getItem("token");
-    if (!token) {
-      router.push("/login");
-    }
+    // if (!token) {
+    //   router.push("/login");
+    // }
   });
   return (
     <>

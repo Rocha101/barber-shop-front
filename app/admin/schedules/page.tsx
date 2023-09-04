@@ -2,14 +2,10 @@
 
 import * as React from "react";
 
-import { Calendar } from "@/components/ui/calendar";
+import Calendar from "@/components/calendar";
 import { ptBR } from "date-fns/locale";
 import { useState } from "react";
 import {
-  MonthlyBody,
-  MonthlyDay,
-  MonthlyCalendar,
-  DefaultMonthlyEventItem,
   WeeklyCalendar,
   WeeklyContainer,
   WeeklyDays,
@@ -25,6 +21,18 @@ const SchedulesPage = () => {
     startOfMonth(new Date())
   );
 
+  const events = [
+    {
+      title: "Degradê",
+      description: "Cliente: Joãozinho",
+      date: new Date(),
+      start_time: "08:00",
+      end_time: "08:00",
+      location: "string",
+      color: "blue",
+    },
+  ];
+
   return (
     <div className="flex flex-col uppercase gap-2">
       <Tabs defaultValue="monthly">
@@ -33,41 +41,7 @@ const SchedulesPage = () => {
           <TabsTrigger value="weekly">Semanal</TabsTrigger>
         </TabsList>
         <TabsContent value="monthly">
-          <div className="border p-3 rounded-md">
-            <MonthlyCalendar
-              currentMonth={currentMonth}
-              onCurrentMonthChange={(date) => setCurrentMonth(date)}
-              locale={ptBR}
-            >
-              <MonthlyNav />
-              <MonthlyBody
-                events={[
-                  {
-                    title: "Barba - Cliente: José",
-                    date: subHours(new Date(), 2),
-                  },
-                  {
-                    title: "Barba - Cliente: João",
-                    date: subHours(new Date(), 1),
-                  },
-                  { title: "Degradê - Cliente: Bob", date: new Date() },
-                ]}
-              >
-                <MonthlyDay<any>
-                  renderDay={(data) =>
-                    data.map((item, index) => (
-                      <DefaultMonthlyEventItem
-                        key={index}
-                        title={item.title}
-                        // Format the date here to be in the format you prefer
-                        date={format(item.date, "k:mm", { locale: ptBR })}
-                      />
-                    ))
-                  }
-                />
-              </MonthlyBody>
-            </MonthlyCalendar>
-          </div>
+          <Calendar events={events} />
         </TabsContent>
         <TabsContent value="weekly">
           <div className="border p-3 bg-slate-100 rounded-md">
