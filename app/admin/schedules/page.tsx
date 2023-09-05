@@ -31,6 +31,33 @@ const SchedulesPage = () => {
       location: "string",
       color: "blue",
     },
+    {
+      title: "Degradê",
+      description: "Cliente: Joãozinho",
+      date: new Date(),
+      start_time: "08:00",
+      end_time: "08:00",
+      location: "string",
+      color: "blue",
+    },
+    {
+      title: "Degradê",
+      description: "Cliente: Joãozinho",
+      date: new Date(),
+      start_time: "08:00",
+      end_time: "08:00",
+      location: "string",
+      color: "blue",
+    },
+    {
+      title: "Degradê",
+      description: "Cliente: Joãozinho",
+      date: new Date(),
+      start_time: "08:00",
+      end_time: "08:00",
+      location: "string",
+      color: "blue",
+    },
   ];
 
   return (

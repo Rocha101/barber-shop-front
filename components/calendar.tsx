@@ -274,157 +274,6 @@ const Calendar = ({ events, dayChildren }: any) => {
             <span className="mt-1 text-xs text-gray-600 dark:text-gray-300">
               {weekdayNames[getDay(day)]}
             </span>
-            <Dialog
-              open={eventDialogOpen === day.getDate()}
-              onOpenChange={() => {
-                if (eventDialogOpen === day.getDate()) {
-                  setEventDialogOpen(0);
-                  handleClear();
-                } else {
-                  setEventDialogOpen(day.getDate());
-                }
-              }}
-            >
-              <DialogTrigger asChild>
-                <Button
-                  className={`absolute right-3 top-3 z-10 hidden h-8 w-8 items-center justify-center rounded-md bg-blue-600 
-                p-1 text-black transition-all duration-300 delay-150 ease-in-out hover:-translate-y-1 hover:scale-110 group-hover:flex`}
-                  onClick={() => {
-                    setEventInfo({
-                      ...eventInfo,
-                      date: new Date(day),
-                    });
-                    setEventDialogOpen(day.getDate());
-                  }}
-                >
-                  <BsCalendarPlus className="flex h-4 w-4 text-white" />
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="w-80 p-0">
-                <div className="flex w-full flex-col">
-                  <div className="flex w-full items-center justify-start gap-4 border-b p-2 pr-10">
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <Button variant="outline">
-                          <div
-                            // eslint-disable-next-line tailwindcss/classnames-order
-                            className={`h-4 w-4 rounded-full bg-${selectedColor}-600`}
-                          />
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="grid w-48 grid-cols-3">
-                        {[
-                          "blue",
-                          "yellow",
-                          "red",
-                          "green",
-                          "purple",
-                          "pink",
-                        ].map((color) => (
-                          <Toggle
-                            key={color}
-                            onClick={() => setSelectedColor(color)}
-                            pressed={selectedColor === color}
-                          >
-                            <div
-                              // eslint-disable-next-line tailwindcss/classnames-order
-                              className={`h-4 w-4 rounded-full bg-${color}-600`}
-                            />
-                          </Toggle>
-                        ))}
-                      </PopoverContent>
-                    </Popover>
-                    <span>Adicionar evento ao dia {day.getDate()}</span>
-                  </div>
-                  <div className="grid grid-cols-2 gap-2 p-2">
-                    <Input
-                      placeholder="Título"
-                      className="col-span-2"
-                      value={eventInfo?.title}
-                      onChange={(e) =>
-                        setEventInfo({ ...eventInfo, title: e.target.value })
-                      }
-                    />
-                    <Input
-                      placeholder="Descrição"
-                      className="col-span-2"
-                      value={eventInfo?.description}
-                      onChange={(e) =>
-                        setEventInfo({
-                          ...eventInfo,
-                          description: e.target.value,
-                        })
-                      }
-                    />
-                    <Select>
-                      <SelectTrigger className="col-span-2 w-full">
-                        <SelectValue placeholder={eventInfo?.location} />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <div className="mb-2 flex items-start">
-                          <Input
-                            value={searchParam}
-                            onChange={(e) => setSearchParam(e.target.value)}
-                            className="h-8 w-full"
-                          />
-                          <Button
-                            className="h-8"
-                            variant={"link"}
-                            /* onClick={createLocation} */
-                          >
-                            Criar
-                          </Button>
-                        </div>
-                        {locations.map((location: any) => (
-                          <SelectItem key={location.id} value={location.id}>
-                            {location.description}
-                          </SelectItem>
-                        ))}
-                        {locations.length === 0 && (
-                          <div className="flex w-full items-center justify-center py-3 underline">
-                            Nenhuma localidade encontrada
-                          </div>
-                        )}
-                      </SelectContent>
-                    </Select>
-
-                    <Input
-                      placeholder="Horário Inicio"
-                      type="time"
-                      value={eventInfo?.start_time}
-                      onChange={(e) =>
-                        setEventInfo({
-                          ...eventInfo,
-                          start_time: e.target.value,
-                        })
-                      }
-                    />
-                    <Input
-                      placeholder="Horário Fim"
-                      type="time"
-                      value={eventInfo?.end_time}
-                      onChange={(e) =>
-                        setEventInfo({ ...eventInfo, end_time: e.target.value })
-                      }
-                    />
-                  </div>
-                </div>
-                <div className="flex w-full justify-end gap-2 border-t p-2">
-                  <Button
-                    className="gap-2"
-                    variant="outline"
-                    /* onClick={onSubmit} */
-                  >
-                    <AiOutlineClose className="h-4 w-4" />
-                    Cancelar
-                  </Button>
-                  <Button className="gap-2" /* onClick={onSubmit} */>
-                    <IoMdSave className="h-4 w-4" />
-                    Salvar
-                  </Button>
-                </div>
-              </DialogContent>
-            </Dialog>
 
             <ScrollArea className=" max-h-full">
               <div className="mt-1 flex flex-col gap-1">
@@ -464,30 +313,12 @@ const Calendar = ({ events, dayChildren }: any) => {
                           <div className="flex w-full items-center justify-between border-b p-3 py-0.5">
                             <p>{new Date(event.date).toLocaleDateString()}</p>
                             <div className="flex items-center justify-center gap-3">
-                              {!editMode ? (
-                                <Button
-                                  variant={"link"}
-                                  className="m-0 p-0"
-                                  onClick={() => setEditMode(true)}
-                                >
-                                  Editar
-                                </Button>
-                              ) : (
-                                <Button
-                                  variant={"link"}
-                                  className="m-0 p-0"
-                                  /* onClick={() => onEdit(event.id)} */
-                                >
-                                  Salvar
-                                </Button>
-                              )}
-
                               <Button
                                 variant={"link"}
                                 className="m-0 p-0 text-red-600"
                                 /* onClick={() => onDelete(event.id)} */
                               >
-                                Apagar
+                                Cancelar
                               </Button>
                               <Close>
                                 <AiOutlineClose className="h-4 w-4" />
@@ -570,41 +401,6 @@ const Calendar = ({ events, dayChildren }: any) => {
                                 )}
                               </SelectContent>
                             </Select>
-                            <Label>Cor</Label>
-                            <Popover>
-                              <PopoverTrigger asChild>
-                                <Button variant="outline" disabled={!editMode}>
-                                  <div
-                                    // eslint-disable-next-line tailwindcss/classnames-order
-                                    className={`h-4 w-4 rounded-full bg-${eventEditInfo.color}-600`}
-                                  />
-                                </Button>
-                              </PopoverTrigger>
-                              <PopoverContent className="grid w-48 grid-cols-3">
-                                {[
-                                  "blue",
-                                  "yellow",
-                                  "red",
-                                  "green",
-                                  "purple",
-                                  "pink",
-                                ].map((color) => (
-                                  <Toggle
-                                    onClick={() =>
-                                      setEventEditInfo({
-                                        ...eventEditInfo,
-                                        color: color,
-                                      })
-                                    }
-                                    key={color}
-                                  >
-                                    <div
-                                      className={`h-4 w-4 rounded-full bg-${color}-600`}
-                                    />
-                                  </Toggle>
-                                ))}
-                              </PopoverContent>
-                            </Popover>
                           </div>
                         </DialogContent>
                       </Dialog>
