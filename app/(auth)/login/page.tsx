@@ -16,7 +16,7 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { useRouter } from "next/navigation";
 import { toast } from "@/components/ui/use-toast";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
 const formSchema = z.object({
@@ -45,32 +45,54 @@ const Login = () => {
 
   const [visiblePass, setVisiblePass] = useState(false);
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-      },
+  const onSubmit = useCallback(
+    (values: z.infer<typeof formSchema>) => {
+      console.log(values);
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+      axios
+        .post("http://localhost:8080/api/login", values, config)
+        .then((res) => {
+          console.log(res);
+          sessionStorage.setItem("token", res.data.token);
+          sessionStorage.setItem("user", JSON.stringify(res.data.data));
+          toast({
+            title: "Login realizado com sucesso!",
+            description: "Redirecionando...",
+          });
+          router.push("/admin/dashboard");
+        })
+        .catch((err) => {
+          console.log(err);
+          toast({
+            title: "Não foi possível realizar o login",
+          });
+        });
+    },
+    [router]
+  );
+
+  useEffect(() => {
+    const handleKeyPress = (event: {
+      key: string;
+      preventDefault: () => void;
+    }) => {
+      if (event.key === "Enter") {
+        event.preventDefault(); // Prevent the default form submission behavior
+        onSubmit(form.getValues()); // Call your onSubmit function
+      }
     };
-    axios
-      .post("http://localhost:8080/api/login", values, config)
-      .then((res) => {
-        console.log(res);
-        sessionStorage.setItem("token", res.data.token);
-        sessionStorage.setItem("user", JSON.stringify(res.data.data));
-        toast({
-          title: "Login realizado com sucesso!",
-          description: "Redirecionando...",
-        });
-        router.push("/admin/dashboard");
-      })
-      .catch((err) => {
-        console.log(err);
-        toast({
-          title: "Não foi possível realizar o login",
-        });
-      });
-  }
+
+    window.addEventListener("keydown", handleKeyPress);
+
+    return () => {
+      // Clean up the event listener when the component unmounts
+      window.removeEventListener("keydown", handleKeyPress);
+    };
+  }, [onSubmit, form]);
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center p-24 gap-10">
@@ -126,7 +148,7 @@ const Login = () => {
               )}
             />
 
-            <Button>Login</Button>
+            <Button type="submit">Login</Button>
           </form>
         </Form>
         <div className="w-full flex items-center justify-center mt-3">
