@@ -18,11 +18,9 @@ import { useRouter } from "next/navigation";
 import { toast } from "@/components/ui/use-toast";
 
 const formSchema = z.object({
-  title: z.string(),
   description: z.string(),
-  price: z.number(),
-  icon: z.string(),
-  time: z.string(),
+  price: z.string(),
+  total_time: z.string(),
 });
 
 const EditService = () => {
@@ -31,11 +29,9 @@ const EditService = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: "",
       description: "",
-      price: 0,
-      icon: "",
-      time: "",
+      price: "",
+      total_time: "",
     },
   });
 
@@ -47,15 +43,10 @@ const EditService = () => {
       },
     };
     axios
-      .post("http://localhost:8080/api/login", values, config)
+      .post("http://localhost:8080/api/labor", values, config)
       .then((res) => {
         console.log(res);
-        sessionStorage.setItem("token", res.data.token);
-        sessionStorage.setItem("user", JSON.stringify(res.data.data));
-        toast({
-          title: "Login realizado com sucesso!",
-        });
-        router.push("/admin/dashboard");
+        router.push("/admin/services");
       })
       .catch((err) => {
         console.log(err);
@@ -73,25 +64,12 @@ const EditService = () => {
         >
           <FormField
             control={form.control}
-            name="title"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>title</FormLabel>
-                <FormControl>
-                  <Input placeholder="degradê" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
             name="description"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>description</FormLabel>
+                <FormLabel>Descrição</FormLabel>
                 <FormControl>
-                  <Input placeholder="degradê" {...field} />
+                  <Input placeholder="Corte" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -103,9 +81,9 @@ const EditService = () => {
             name="price"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>price</FormLabel>
+                <FormLabel>Preço</FormLabel>
                 <FormControl>
-                  <Input placeholder="degradê" {...field} />
+                  <Input placeholder="R$0.00" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -114,19 +92,19 @@ const EditService = () => {
 
           <FormField
             control={form.control}
-            name="icon"
+            name="total_time"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>icon</FormLabel>
+                <FormLabel>Duração Total</FormLabel>
                 <FormControl>
-                  <Input placeholder="degradê" {...field} />
+                  <Input placeholder="00:45" {...field} type="time" max={2} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
 
-          <Button>Criar Serviço</Button>
+          <Button type="submit">Criar Serviço</Button>
         </form>
       </Form>
     </div>
