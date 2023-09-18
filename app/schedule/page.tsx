@@ -65,10 +65,15 @@ const CustomerSchedulePage = () => {
   };
 
   return (
-    <div className="relative p-16">
-      <div className="absolute left-0 top-0 flex items-center justify-start gap-3 w-full h-16 border px-3 bg-white">
-        <Image src="/logo.png" width={50} height={50} alt="logo" />
-        <h2 className="text-lg font-bold">Barber Shop Manager</h2>
+    <div className="relative p-4">
+      <div className="absolute left-0 top-0 flex items-center justify-between gap-3 w-full h-16 border px-3 bg-white">
+        <div className="flex gap-3 items-center">
+          <Image src="/logo.png" width={50} height={50} alt="logo" />
+          <h2 className="text-lg font-bold">Barber Shop Manager</h2>
+        </div>
+        <Link href={"/"} passHref>
+          <Button variant="link">Sou Barbeiro</Button>
+        </Link>
       </div>
       <div className="h-screen flex items-center justify-center">
         <div className="p-4 border rounded min-w-[500px] min-h-[400px] flex flex-col justify-between">
