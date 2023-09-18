@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import axios from "axios";
 import { Toaster } from "@/components/ui/toaster";
 import ConnectionTesterProvider from "@/components/providers/conn-tester-provider.";
+import ConnectionTester from "@/components/conn-tester";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,9 +21,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt-br">
-      <body className={inter.className}>
-        <ConnectionTesterProvider>{children}</ConnectionTesterProvider>
+      <body className={`${inter.className} relative`}>
+        {children}
         <Toaster />
+        <ConnectionTester />
       </body>
     </html>
   );

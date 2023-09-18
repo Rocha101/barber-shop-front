@@ -5,12 +5,7 @@ const ConnectionTesterProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  return (
-    <div>
-      {children}
-      <ConnectionTester />
-    </div>
-  );
+  return <div>{children}</div>;
 };
 
 export default ConnectionTesterProvider;

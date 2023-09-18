@@ -41,7 +41,7 @@ const ConnectionTester = () => {
   }, []);
 
   return (
-    <div className="border rounded-md p-4 absolute left-4 bottom-4 flex items-center justify-between gap-3 bg-background z-50 select-none">
+    <div className="border rounded-md p-4 fixed left-4 bottom-4 flex items-center justify-between gap-3 bg-background z-50 select-none">
       <div
         className={`
             w-3 h-3 rounded-full ${systemUp ? "bg-green-500" : "bg-red-500"}

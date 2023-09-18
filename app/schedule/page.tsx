@@ -65,8 +65,8 @@ const CustomerSchedulePage = () => {
   };
 
   return (
-    <div className="relative">
-      <div className="absolute left-0 top-0 flex items-center justify-start gap-3 w-full h-16 border px-3">
+    <div className="relative p-16">
+      <div className="absolute left-0 top-0 flex items-center justify-start gap-3 w-full h-16 border px-3 bg-white">
         <Image src="/logo.png" width={50} height={50} alt="logo" />
         <h2 className="text-lg font-bold">Barber Shop Manager</h2>
       </div>
