@@ -24,6 +24,7 @@ import {
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useHookFormMask } from "use-mask-input";
 
 const formSchema = z.object({
   id: z.number(),
@@ -37,7 +38,7 @@ const formSchema = z.object({
       required_error: "Telefone obrigatório",
     })
     .min(10, { message: "Telefone deve ter no mínimo 10 caracteres" })
-    .max(11, { message: "Telefone deve ter no máximo 11 caracteres" }),
+    .max(15, { message: "Telefone deve ter no máximo 15 caracteres" }),
   email: z
     .string({
       required_error: "Email obrigatório",
@@ -63,6 +64,8 @@ const EditUser = ({ params }: { params: { id: string } }) => {
       phone: "",
     },
   });
+
+  const registerWithMask = useHookFormMask(form.register);
 
   const [visiblePass, setVisiblePass] = useState(false);
 
@@ -166,7 +169,16 @@ const EditUser = ({ params }: { params: { id: string } }) => {
                 <FormItem>
                   <FormLabel>Telefone</FormLabel>
                   <FormControl>
-                    <Input placeholder="(xx)xxxxx-xxxx" {...field} />
+                    <Input
+                      placeholder="(xx)xxxxx-xxxx"
+                      {...registerWithMask(
+                        "phone",
+                        ["(99) 99999-9999", "99999-9999"],
+                        {
+                          required: true,
+                        }
+                      )}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

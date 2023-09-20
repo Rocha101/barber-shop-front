@@ -17,6 +17,15 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import * as z from "zod";
+import { useHookFormMask } from "use-mask-input";
+import { useRouter } from "next/navigation";
+
+const phoneMask = (value: string) => {
+  return value
+    .replace(/\D/gi, "")
+    .replace(/^(\d{2})(\d)/gi, "($1) $2")
+    .replace(/(\d)(\d{4})$/gi, "$1-$2");
+};
 
 const formSchema = z
   .object({
@@ -30,7 +39,7 @@ const formSchema = z
         required_error: "Telefone obrigatório",
       })
       .min(10, { message: "Telefone deve ter no mínimo 10 caracteres" })
-      .max(11, { message: "Telefone deve ter no máximo 11 caracteres" }),
+      .max(15, { message: "Telefone deve ter no máximo 15 caracteres" }),
     email: z
       .string({
         required_error: "Email obrigatório",
@@ -53,6 +62,7 @@ const formSchema = z
   });
 
 const Login = () => {
+  const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -63,6 +73,8 @@ const Login = () => {
       confirmPassword: "",
     },
   });
+
+  const registerWithMask = useHookFormMask(form.register);
 
   const [visiblePass, setVisiblePass] = useState(false);
   const [visibleConfirmPass, setVisibleConfirmPass] = useState(false);
@@ -86,6 +98,7 @@ const Login = () => {
         toast({
           title: "Você foi cadastrado com sucesso!",
         });
+        router.push("/login");
         form.reset();
       })
       .catch((err) => {
@@ -139,7 +152,16 @@ const Login = () => {
                 <FormItem>
                   <FormLabel>Telefone</FormLabel>
                   <FormControl>
-                    <Input placeholder="(xx)xxxxx-xxxx" {...field} />
+                    <Input
+                      placeholder="(xx)xxxxx-xxxx"
+                      {...registerWithMask(
+                        "phone",
+                        ["(99) 99999-9999", "99999-9999"],
+                        {
+                          required: true,
+                        }
+                      )}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

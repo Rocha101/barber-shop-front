@@ -16,11 +16,11 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   });
   return (
     <>
-      <div className="relative flex min-h-screen flex-col">
+      <div className="relative flex min-h-screen flex-col h-full">
         <TopNav />
-        <div className="flex flex-1">
+        <div className="h-full flex flex-1">
           <AdminSidebar />
-          <div className="flex-1 p-5">{children}</div>
+          <div className="h-full flex-1 p-5">{children}</div>
         </div>
       </div>
     </>

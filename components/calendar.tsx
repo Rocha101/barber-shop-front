@@ -300,7 +300,7 @@ const Calendar = ({ events, dayChildren }: any) => {
                           <div
                             key={event.id}
                             // eslint-disable-next-line tailwindcss/classnames-order
-                            className={`flex w-full justify-start rounded border p-1 bg-${event.color}-600 text-white cursor-pointer`}
+                            className={`flex w-full justify-start rounded border p-1 bg-gray-900 text-white cursor-pointer`}
                             onClick={() => {
                               setViewMoreDialogOpen(event.id);
                               setEventEditInfo(event);

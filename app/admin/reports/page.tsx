@@ -21,8 +21,8 @@ const ReportsPage = () => {
         </div>
         <Button>Gerar Relatório</Button>
       </div>
-      <div className="w-full">
-        <PDFViewer style={{ width: "100%", height: "1000px" }}>
+      <div className="h-full w-full">
+        <PDFViewer style={{ width: "100%", height: "100%" }}>
           <GeneralReport />
         </PDFViewer>
       </div>
