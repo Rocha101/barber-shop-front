@@ -1,6 +1,10 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 import Image from "next/image";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -11,6 +15,14 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import {
   Table,
   TableBody,
@@ -25,8 +37,47 @@ import { Calendar } from "@/components/ui/calendar";
 import { ptBR } from "date-fns/locale";
 import Link from "next/link";
 import { BsWhatsapp } from "react-icons/bs";
+import { useHookFormMask } from "use-mask-input";
+
+const formSchema = z.object({
+  id: z.number(),
+  username: z
+    .string({
+      required_error: "Nome obrigatório",
+    })
+    .min(3, { message: "Nome deve ter no mínimo 3 caracteres" }),
+  phone: z
+    .string({
+      required_error: "Telefone obrigatório",
+    })
+    .min(10, { message: "Telefone deve ter no mínimo 10 caracteres" })
+    .max(15, { message: "Telefone deve ter no máximo 15 caracteres" }),
+  email: z
+    .string({
+      required_error: "Email obrigatório",
+    })
+    .email({ message: "Email inválido" }),
+  password: z
+    .string({
+      required_error: "Senha obrigatória",
+    })
+    .min(6, { message: "Senha deve ter no mínimo 6 caracteres" }),
+});
 
 const CustomerSchedulePage = () => {
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      id: 0,
+      email: "",
+      password: "",
+      username: "",
+      phone: "",
+    },
+  });
+
+  const registerWithMask = useHookFormMask(form.register);
+
   const [generalInfo, setGeneralInfo] = useState({
     name: "",
     email: "",
@@ -100,139 +151,166 @@ const CustomerSchedulePage = () => {
 
             <h1 className="font-bold">Agendamento</h1>
             <div className="flex flex-col gap-3">
-              {step === 0 && (
-                <>
-                  <Label>Nome do cliente</Label>
-                  <Input
-                    placeholder="Nome do cliente"
-                    value={generalInfo.name}
-                    onChange={(e) =>
-                      setGeneralInfo({ ...generalInfo, name: e.target.value })
-                    }
-                  />
-                  <Label>E-mail do cliente</Label>
-                  <Input
-                    placeholder="E-mail do cliente"
-                    value={generalInfo.email}
-                    onChange={(e) =>
-                      setGeneralInfo({ ...generalInfo, email: e.target.value })
-                    }
-                  />
-                  <Label>Telefone do cliente</Label>
-                  <Input
-                    placeholder="Telefone do cliente"
-                    value={generalInfo.phone}
-                    onChange={(e) =>
-                      setGeneralInfo({ ...generalInfo, phone: e.target.value })
-                    }
-                  />
-                </>
-              )}
-              {step === 1 && (
-                <>
-                  <Label>Serviço</Label>
-                  <Input
-                    placeholder="Serviço"
-                    value={generalInfo.service}
-                    onChange={(e) =>
-                      setGeneralInfo({
-                        ...generalInfo,
-                        service: e.target.value,
-                      })
-                    }
-                  />
-                  <Label>Profissional</Label>
-                  <Input
-                    placeholder="Nome do barbeiro"
-                    value={generalInfo.barber}
-                    onChange={(e) =>
-                      setGeneralInfo({
-                        ...generalInfo,
-                        barber: e.target.value,
-                      })
-                    }
-                  />
-                </>
-              )}
+              <Form {...form}>
+                <form
+                  className="flex flex-col gap-4 w-full"
+                  onSubmit={form.handleSubmit(onSubmit)}
+                >
+                  {step === 0 && (
+                    <>
+                      <Label>Nome do cliente</Label>
+                      <Input
+                        placeholder="Nome do cliente"
+                        value={generalInfo.name}
+                        onChange={(e) =>
+                          setGeneralInfo({
+                            ...generalInfo,
+                            name: e.target.value,
+                          })
+                        }
+                      />
+                      <Label>E-mail do cliente</Label>
+                      <Input
+                        placeholder="E-mail do cliente"
+                        value={generalInfo.email}
+                        onChange={(e) =>
+                          setGeneralInfo({
+                            ...generalInfo,
+                            email: e.target.value,
+                          })
+                        }
+                      />
+                      <FormField
+                        control={form.control}
+                        name="phone"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Telefone</FormLabel>
+                            <FormControl>
+                              <Input
+                                placeholder="(xx)xxxxx-xxxx"
+                                {...registerWithMask(
+                                  "phone",
+                                  ["(99) 99999-9999", "99999-9999"],
+                                  {
+                                    required: true,
+                                  }
+                                )}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </>
+                  )}
+                  {step === 1 && (
+                    <>
+                      <Label>Serviço</Label>
+                      <Input
+                        placeholder="Serviço"
+                        value={generalInfo.service}
+                        onChange={(e) =>
+                          setGeneralInfo({
+                            ...generalInfo,
+                            service: e.target.value,
+                          })
+                        }
+                      />
+                      <Label>Profissional</Label>
+                      <Input
+                        placeholder="Nome do barbeiro"
+                        value={generalInfo.barber}
+                        onChange={(e) =>
+                          setGeneralInfo({
+                            ...generalInfo,
+                            barber: e.target.value,
+                          })
+                        }
+                      />
+                    </>
+                  )}
 
-              {step === 2 && (
-                <>
-                  <Label>Local</Label>
-                  <Input
-                    placeholder="Local"
-                    value={generalInfo.location}
-                    onChange={(e) =>
-                      setGeneralInfo({
-                        ...generalInfo,
-                        location: e.target.value,
-                      })
-                    }
-                  />
-                  <Label>Data</Label>
-                  <div className="flex border mb-3 rounded">
-                    <Calendar
-                      mode="single"
-                      selected={date}
-                      onSelect={setDate}
-                      className=""
-                      locale={ptBR}
-                    />
-                    <div className="h-full grid grid-cols-3 gap-3 p-4 items-start">
-                      {freeTimes.map((time) => (
-                        <Button
-                          key={time}
-                          className="text-xs"
-                          variant={
-                            selectedTime === time ? "default" : "outline"
-                          }
-                          onClick={() => handleSelectTime(time)}
-                        >
-                          {time}
-                        </Button>
-                      ))}
+                  {step === 2 && (
+                    <>
+                      <Label>Local</Label>
+                      <Input
+                        placeholder="Local"
+                        value={generalInfo.location}
+                        onChange={(e) =>
+                          setGeneralInfo({
+                            ...generalInfo,
+                            location: e.target.value,
+                          })
+                        }
+                      />
+                      <Label>Data</Label>
+                      <div className="flex border mb-3 rounded">
+                        <Calendar
+                          mode="single"
+                          selected={date}
+                          onSelect={setDate}
+                          className=""
+                          locale={ptBR}
+                        />
+                        <div className="h-full grid grid-cols-3 gap-3 p-4 items-start">
+                          {freeTimes.map((time) => (
+                            <Button
+                              key={time}
+                              className="text-xs"
+                              variant={
+                                selectedTime === time ? "default" : "outline"
+                              }
+                              onClick={() => handleSelectTime(time)}
+                            >
+                              {time}
+                            </Button>
+                          ))}
+                        </div>
+                      </div>
+                    </>
+                  )}
+
+                  {step === 3 && (
+                    <div>
+                      <Table>
+                        <TableBody>
+                          <TableRow>
+                            <TableHead className="w-[100px]">Serviço</TableHead>
+                            <TableCell className="font-medium">
+                              {generalInfo.service}
+                            </TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableHead>Local</TableHead>
+                            <TableCell className="font-medium">
+                              {generalInfo.location}
+                            </TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableHead>Data</TableHead>
+                            <TableCell className="font-medium">
+                              {date?.toLocaleDateString("pt-BR")}
+                            </TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableHead>Hora</TableHead>
+                            <TableCell className="font-medium">
+                              {selectedTime}
+                            </TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableHead>Profissional</TableHead>
+                            <TableCell className="font-medium">
+                              {generalInfo.barber}
+                            </TableCell>
+                          </TableRow>
+                        </TableBody>
+                      </Table>
                     </div>
-                  </div>
-                </>
-              )}
-
-              {step === 3 && (
-                <div>
-                  <Table>
-                    <TableBody>
-                      <TableRow>
-                        <TableHead className="w-[100px]">Serviço</TableHead>
-                        <TableCell className="font-medium">
-                          {generalInfo.service}
-                        </TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableHead>Local</TableHead>
-                        <TableCell className="font-medium">
-                          {generalInfo.location}
-                        </TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableHead>Data</TableHead>
-                        <TableCell className="font-medium">
-                          {date?.toLocaleDateString("pt-BR")}
-                        </TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableHead>Hora</TableHead>
-                        <TableCell className="font-medium">
-                          {selectedTime}
-                        </TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableHead>Profissional</TableHead>
-                        <TableCell className="font-medium">
-                          {generalInfo.barber}
-                        </TableCell>
-                      </TableRow>
-                    </TableBody>
-                  </Table>
-                </div>
-              )}
+                  )}
+                </form>
+              </Form>
             </div>
           </div>
           <div
