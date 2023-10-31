@@ -10,7 +10,7 @@ const Dashboard = () => {
         Seja Bem-vindo (a){" "}
         {JSON.parse(
           sessionStorage.getItem("user") || "{}"
-        )?.username.toUpperCase()}
+        )?.username?.toUpperCase()}
       </h1>
       <div className="flex">
         <Image src="/logo.png" width={250} height={250} alt={""} />

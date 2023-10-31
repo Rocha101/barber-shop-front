@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -19,27 +20,24 @@ import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import * as z from "zod";
 import { useHookFormMask } from "use-mask-input";
 import { useRouter } from "next/navigation";
-
-const phoneMask = (value: string) => {
-  return value
-    .replace(/\D/gi, "")
-    .replace(/^(\d{2})(\d)/gi, "($1) $2")
-    .replace(/(\d)(\d{4})$/gi, "$1-$2");
-};
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
+import format from "date-fns/format";
+import { CalendarIcon, ClockIcon, TimerIcon } from "@radix-ui/react-icons";
+import { Calendar } from "@/components/ui/calendar";
+import { Slider } from "@/components/ui/slider";
 
 const formSchema = z
   .object({
-    username: z
+    name: z
       .string({
         required_error: "Nome obrigatório",
       })
       .min(3, { message: "Nome deve ter no mínimo 3 caracteres" }),
-    phone: z
-      .string({
-        required_error: "Telefone obrigatório",
-      })
-      .min(10, { message: "Telefone deve ter no mínimo 10 caracteres" })
-      .max(15, { message: "Telefone deve ter no máximo 15 caracteres" }),
     email: z
       .string({
         required_error: "Email obrigatório",
@@ -55,6 +53,8 @@ const formSchema = z
         required_error: "Senha obrigatória",
       })
       .min(6, { message: "Senha deve ter no mínimo 6 caracteres" }),
+    start_time: z.string(),
+    end_time: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Senhas não conferem",
@@ -68,13 +68,12 @@ const Login = () => {
     defaultValues: {
       email: "",
       password: "",
-      username: "",
-      phone: "",
+      name: "",
       confirmPassword: "",
+      start_time: "",
+      end_time: "",
     },
   });
-
-  const registerWithMask = useHookFormMask(form.register);
 
   const [visiblePass, setVisiblePass] = useState(false);
   const [visibleConfirmPass, setVisibleConfirmPass] = useState(false);
@@ -84,16 +83,18 @@ const Login = () => {
     const config = {
       headers: {
         "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
       },
     };
     const data = {
-      username: values.username,
+      username: values.name,
       email: values.email,
-      phone: values.phone,
       password: values.password,
+      start_time: values.start_time,
+      end_time: values.end_time,
     };
     axios
-      .post("http://localhost:8080/api/barbers", data, config)
+      .post("http://localhost:8080/api/auth/register", data, config)
       .then((res) => {
         toast({
           title: "Você foi cadastrado com sucesso!",
@@ -120,7 +121,7 @@ const Login = () => {
           >
             <FormField
               control={form.control}
-              name="username"
+              name="name"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Nome</FormLabel>
@@ -140,28 +141,6 @@ const Login = () => {
                   <FormLabel>Email</FormLabel>
                   <FormControl>
                     <Input placeholder="joaobarbeiro@gmail.com" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="phone"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Telefone</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="(xx)xxxxx-xxxx"
-                      {...registerWithMask(
-                        "phone",
-                        ["(99) 99999-9999", "99999-9999"],
-                        {
-                          required: true,
-                        }
-                      )}
-                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -225,6 +204,34 @@ const Login = () => {
                       )}
                     </Button>
                   </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="start_time"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>Início Expediente</FormLabel>
+                  <FormControl>
+                    <Input type="time" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="end_time"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>Fim Expediente</FormLabel>
+                  <FormControl>
+                    <Input type="time" {...field} />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}

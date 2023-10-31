@@ -18,6 +18,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "@/components/ui/use-toast";
 import { useCallback, useEffect, useState } from "react";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+import Cookies from "js-cookie";
 
 const formSchema = z.object({
   email: z
@@ -51,14 +52,15 @@ const Login = () => {
       const config = {
         headers: {
           "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
         },
       };
       axios
-        .post("http://localhost:8080/api/login", values, config)
+        .post("http://localhost:8080/api/auth/login", values, config)
         .then((res) => {
           console.log(res);
-          sessionStorage.setItem("token", res.data.token);
-          sessionStorage.setItem("user", JSON.stringify(res.data.data));
+          Cookies.set("user", res.data.user);
+          Cookies.set("token", res.data.token);
           toast({
             title: "Login realizado com sucesso!",
             description: "Redirecionando...",
@@ -81,8 +83,8 @@ const Login = () => {
       preventDefault: () => void;
     }) => {
       if (event.key === "Enter") {
-        event.preventDefault(); // Prevent the default form submission behavior
-        onSubmit(form.getValues()); // Call your onSubmit function
+        event.preventDefault();
+        onSubmit(form.getValues());
       }
     };
 

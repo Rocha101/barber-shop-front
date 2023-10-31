@@ -4,16 +4,18 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import TopNav from "@/components/top-nav";
 import { AdminSidebar } from "@/components/admin-sidebar";
+import Cookies from "js-cookie";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
 
   useEffect(() => {
-    const token = sessionStorage.getItem("token");
-    // if (!token) {
-    //   router.push("/login");
-    // }
+    const token = Cookies.get("token");
+    if (!token) {
+      router.push("/login");
+    }
   });
+
   return (
     <>
       <div className="relative flex min-h-screen flex-col h-full">

@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/data-table";
 
 import { columns } from "./columns";
+import Cookies from "js-cookie";
 
 const UsersPage = () => {
   const router = useRouter();
@@ -16,10 +17,11 @@ const UsersPage = () => {
   const [barbers, setBarbers] = useState<any>(null);
 
   useEffect(() => {
-    const token = sessionStorage.getItem("token");
-    const url = `http://localhost:8080/api/barbers`;
+    const token = Cookies.get("token");
+    console.log(token);
+    const url = `http://localhost:8080/api/user`;
     const config = {
-      headers: { Authorization: `Bearer ${token}` },
+      headers: { Authorization: `${token}` },
     };
     axios
       .get(url, config)

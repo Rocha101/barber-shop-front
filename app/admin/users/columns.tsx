@@ -61,11 +61,15 @@ export const columns: ColumnDef<Users>[] = [
   {
     accessorKey: "phone",
     header: "Telefone",
-    cell: ({ row }) => {
-      return <div>{formatPhoneNumber(row.original.phone)}</div>;
-    },
   },
-
+  {
+    accessorKey: "start_time",
+    header: "Horário inicial",
+  },
+  {
+    accessorKey: "end_time",
+    header: "Horário final",
+  },
   {
     accessorKey: "actions",
     header: "Ações",
