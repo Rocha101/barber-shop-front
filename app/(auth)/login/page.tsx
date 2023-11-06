@@ -59,7 +59,7 @@ const Login = () => {
         .post("http://localhost:8080/api/auth/login", values, config)
         .then((res) => {
           console.log(res);
-          Cookies.set("user", res.data.user);
+          Cookies.set("user", JSON.stringify(res.data.user));
           Cookies.set("token", res.data.token);
           toast({
             title: "Login realizado com sucesso!",

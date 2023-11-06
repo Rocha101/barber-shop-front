@@ -97,7 +97,7 @@ export function DataTable<TData, TValue>({
                     e.preventDefault();
                     onRowClick && onRowClick(row.original);
                   }}
-                  className={onRowClick ? "cursor-pointer" : ""}
+                  className={`${onRowClick ? "cursor-pointer" : ""} h-14`}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id} className="truncate px-4 py-0.5">

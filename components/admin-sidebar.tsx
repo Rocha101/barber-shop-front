@@ -25,6 +25,7 @@ import {
 } from "react-icons/ai";
 import { BsFillCalendar2CheckFill } from "react-icons/bs";
 import { BiSolidReport } from "react-icons/bi";
+import { MdPointOfSale } from "react-icons/md";
 import {
   TbLayoutSidebarLeftExpand,
   TbLayoutSidebarLeftCollapse,
@@ -41,6 +42,12 @@ const links = [
     href: "/admin/users",
     label: "Usuários",
     icon: <AiOutlineUser />,
+    admin: true,
+  },
+  {
+    href: "/admin/sales",
+    label: "Venda",
+    icon: <MdPointOfSale />,
     admin: true,
   },
   {
