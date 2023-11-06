@@ -104,7 +104,7 @@ export function AdminSidebar() {
 
   return (
     <aside
-      className={`z-50 hidden flex-col gap-3 border-r p-3 lg:flex ${
+      className={`z-50 flex-col gap-3 border-r p-3 flex ${
         isOpen ? " w-64" : "w-20"
       }`}
     >

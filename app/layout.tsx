@@ -24,7 +24,7 @@ export default function RootLayout({
       <body className={`${inter.className} relative`}>
         {children}
         <Toaster />
-        <ConnectionTester />
+        {/*   <ConnectionTester /> */}
       </body>
     </html>
   );
