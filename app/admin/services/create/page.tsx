@@ -11,11 +11,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
-import Link from "next/link";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { useRouter } from "next/navigation";
 import { toast } from "@/components/ui/use-toast";
+import Cookies from "js-cookie";
 
 const formSchema = z.object({
   description: z.string(),
@@ -36,14 +36,19 @@ const EditService = () => {
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+    const token = Cookies.get("token");
+    const user = JSON.parse(Cookies.get("user") || "{}");
     const config = {
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { Authorization: `${token}` },
     };
+    const data = {
+      ...values,
+      price: Number(values.price),
+      userId: user.id,
+    };
+    console.log(data);
     axios
-      .post("http://localhost:8080/api/labor", values, config)
+      .post("http://localhost:8080/api/service", data, config)
       .then((res) => {
         console.log(res);
         router.push("/admin/services");

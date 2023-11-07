@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ColumnDef } from "@tanstack/react-table";
 
 import { Button } from "@/components/ui/button";
+import formatMoney from "@/lib/moneyMask";
 
 interface Product {
   description: string;
@@ -21,6 +22,9 @@ export const columns: ColumnDef<Product>[] = [
   {
     accessorKey: "price",
     header: "Valor",
+    cell: ({ row }) => {
+      return <span>{formatMoney(+row.original.price)}</span>;
+    },
   },
   {
     accessorKey: "quantity",
