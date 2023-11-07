@@ -32,12 +32,23 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { ptBR } from "date-fns/locale";
 import Link from "next/link";
 import { BsWhatsapp } from "react-icons/bs";
 import { useHookFormMask } from "use-mask-input";
+import axios from "axios";
+import Cookies from "js-cookie";
+import { toast } from "@/components/ui/use-toast";
+import { Service } from "../admin/services/service";
 
 const formSchema = z.object({
   id: z.number(),
@@ -46,22 +57,26 @@ const formSchema = z.object({
       required_error: "Nome obrigatório",
     })
     .min(3, { message: "Nome deve ter no mínimo 3 caracteres" }),
+  email: z
+    .string({
+      required_error: "Email obrigatório",
+    })
+    .email({ message: "Email inválido" }),
   phone: z
     .string({
       required_error: "Telefone obrigatório",
     })
     .min(10, { message: "Telefone deve ter no mínimo 10 caracteres" })
     .max(15, { message: "Telefone deve ter no máximo 15 caracteres" }),
-  email: z
-    .string({
-      required_error: "Email obrigatório",
-    })
-    .email({ message: "Email inválido" }),
-  password: z
-    .string({
-      required_error: "Senha obrigatória",
-    })
-    .min(6, { message: "Senha deve ter no mínimo 6 caracteres" }),
+  serviceId: z.string({
+    required_error: "Empresa obrigatória",
+  }),
+  barberId: z.string({
+    required_error: "Profissional obrigatória",
+  }),
+  locationId: z.string({
+    required_error: "Filial obrigatória",
+  }),
 });
 
 const CustomerSchedulePage = () => {
@@ -70,7 +85,6 @@ const CustomerSchedulePage = () => {
     defaultValues: {
       id: 0,
       email: "",
-      password: "",
       username: "",
       phone: "",
     },
@@ -90,6 +104,10 @@ const CustomerSchedulePage = () => {
   const [step, setStep] = useState(0);
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [selectedTime, setSelectedTime] = useState<string>();
+  const [services, setServices] = useState<Service[]>([]);
+  const [locations, setLocations] = useState<string[]>([]);
+  const [barbers, setBarbers] = useState<string[]>([]);
+
   const freeTimes = ["08:00", "08:30", "09:00", "09:30", "10:00", "10:30"];
 
   const ProgressPercentage = step * 33.33;
@@ -114,6 +132,63 @@ const CustomerSchedulePage = () => {
     };
     console.log(data);
   };
+
+  useEffect(() => {
+    const token = Cookies.get("token");
+    const config = {
+      headers: { Authorization: `${token}` },
+    };
+    axios
+      .get("http://localhost:8080/api/service", config)
+      .then((res) => {
+        console.log(res.data);
+        setServices(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+        toast({
+          title: "Não foi possível buscar os serviços",
+        });
+      });
+  }, []);
+
+  useEffect(() => {
+    const token = Cookies.get("token");
+    const config = {
+      headers: { Authorization: `${token}` },
+    };
+    axios
+      .get("http://localhost:8080/api/user", config)
+      .then((res) => {
+        console.log(res.data);
+        setBarbers(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+        toast({
+          title: "Não foi possível buscar os serviços",
+        });
+      });
+  }, []);
+
+  useEffect(() => {
+    const token = Cookies.get("token");
+    const config = {
+      headers: { Authorization: `${token}` },
+    };
+    axios
+      .get("http://localhost:8080/api/location", config)
+      .then((res) => {
+        console.log(res.data);
+        setLocations(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+        toast({
+          title: "Não foi possível buscar os serviços",
+        });
+      });
+  }, []);
 
   return (
     <div className="relative p-4">
@@ -158,27 +233,31 @@ const CustomerSchedulePage = () => {
                 >
                   {step === 0 && (
                     <>
-                      <Label>Nome do cliente</Label>
-                      <Input
-                        placeholder="Nome do cliente"
-                        value={generalInfo.name}
-                        onChange={(e) =>
-                          setGeneralInfo({
-                            ...generalInfo,
-                            name: e.target.value,
-                          })
-                        }
+                      <FormField
+                        control={form.control}
+                        name="username"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Nome</FormLabel>
+                            <FormControl>
+                              <Input {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
                       />
-                      <Label>E-mail do cliente</Label>
-                      <Input
-                        placeholder="E-mail do cliente"
-                        value={generalInfo.email}
-                        onChange={(e) =>
-                          setGeneralInfo({
-                            ...generalInfo,
-                            email: e.target.value,
-                          })
-                        }
+                      <FormField
+                        control={form.control}
+                        name="email"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>E-mail</FormLabel>
+                            <FormControl>
+                              <Input {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
                       />
                       <FormField
                         control={form.control}
@@ -188,7 +267,6 @@ const CustomerSchedulePage = () => {
                             <FormLabel>Telefone</FormLabel>
                             <FormControl>
                               <Input
-                                placeholder="(xx)xxxxx-xxxx"
                                 {...registerWithMask(
                                   "phone",
                                   ["(99) 99999-9999", "99999-9999"],
@@ -206,45 +284,101 @@ const CustomerSchedulePage = () => {
                   )}
                   {step === 1 && (
                     <>
-                      <Label>Serviço</Label>
-                      <Input
-                        placeholder="Serviço"
-                        value={generalInfo.service}
-                        onChange={(e) =>
-                          setGeneralInfo({
-                            ...generalInfo,
-                            service: e.target.value,
-                          })
-                        }
+                      <FormField
+                        control={form.control}
+                        name="locationId"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Filial</FormLabel>
+                            <Select
+                              onValueChange={field.onChange}
+                              value={field.value}
+                            >
+                              <FormControl>
+                                <SelectTrigger>
+                                  <SelectValue />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                {locations.map((location: any) => (
+                                  <SelectItem
+                                    key={location.id}
+                                    value={`${location.id}`}
+                                  >
+                                    {location.description}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
                       />
-                      <Label>Profissional</Label>
-                      <Input
-                        placeholder="Nome do barbeiro"
-                        value={generalInfo.barber}
-                        onChange={(e) =>
-                          setGeneralInfo({
-                            ...generalInfo,
-                            barber: e.target.value,
-                          })
-                        }
+                      <FormField
+                        control={form.control}
+                        name="barberId"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Barbeiro</FormLabel>
+                            <Select
+                              onValueChange={field.onChange}
+                              value={field.value}
+                            >
+                              <FormControl>
+                                <SelectTrigger>
+                                  <SelectValue />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                {barbers.map((barber: any) => (
+                                  <SelectItem
+                                    key={barber.id}
+                                    value={`${barber.id}`}
+                                  >
+                                    {barber.username}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="serviceId"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Serviço</FormLabel>
+                            <Select
+                              onValueChange={field.onChange}
+                              value={field.value}
+                            >
+                              <FormControl>
+                                <SelectTrigger>
+                                  <SelectValue />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                {services.map((service: Service) => (
+                                  <SelectItem
+                                    key={service.id}
+                                    value={`${service.id}`}
+                                  >
+                                    {service.description}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
                       />
                     </>
                   )}
 
                   {step === 2 && (
                     <>
-                      <Label>Local</Label>
-                      <Input
-                        placeholder="Local"
-                        value={generalInfo.location}
-                        onChange={(e) =>
-                          setGeneralInfo({
-                            ...generalInfo,
-                            location: e.target.value,
-                          })
-                        }
-                      />
-                      <Label>Data</Label>
                       <div className="flex border mb-3 rounded">
                         <Calendar
                           mode="single"
