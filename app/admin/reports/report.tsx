@@ -6,27 +6,30 @@ import { ReportT } from "./report-type";
 const styles = StyleSheet.create({
   page: {
     flexDirection: "row",
-    backgroundColor: "#E4E4E4",
-    width: "1000px",
+    backgroundColor: "#F5F5F5",
+    width: "100%",
   },
   section: {
-    margin: 10,
-    padding: 10,
+    margin: 20,
+    padding: 20,
     flexGrow: 1,
+    border: "1px solid #CCCCCC",
+    borderRadius: 5,
   },
   topics: {
-    fontSize: 12,
-    marginTop: 10,
+    fontSize: 14,
+    marginVertical: 8,
   },
   title: {
-    fontSize: 24,
+    fontSize: 28,
     textAlign: "center",
-    marginBottom: 30,
+    marginBottom: 20,
+    color: "#333333",
   },
 });
 
 // Create Document Component
-const GeneralReport = ({ data }: { data: ReportT }) => (
+const GeneralReport = ({ data }: { data: ReportT | undefined }) => (
   <Document>
     <Page size="A4" style={styles.page}>
       <View style={styles.section}>

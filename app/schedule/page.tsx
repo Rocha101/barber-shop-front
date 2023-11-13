@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useForm, UseFormReturn } from "react-hook-form";
 import { z } from "zod";
 import Image from "next/image";
 import { Label } from "@/components/ui/label";
@@ -49,9 +49,10 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import { toast } from "@/components/ui/use-toast";
 import { Service } from "../admin/services/service";
+import { UserT } from "@/app/admin/users/user";
+import { LocationT } from "../admin/locations/locations";
 
 const formSchema = z.object({
-  id: z.number(),
   username: z
     .string({
       required_error: "Nome obrigatório",
@@ -83,7 +84,6 @@ const CustomerSchedulePage = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      id: 0,
       email: "",
       username: "",
       phone: "",
@@ -105,15 +105,40 @@ const CustomerSchedulePage = () => {
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [selectedTime, setSelectedTime] = useState<string>();
   const [services, setServices] = useState<Service[]>([]);
-  const [locations, setLocations] = useState<string[]>([]);
-  const [barbers, setBarbers] = useState<string[]>([]);
+  const [locations, setLocations] = useState<LocationT[]>([]);
+  const [barbers, setBarbers] = useState<UserT[]>([]);
 
   const freeTimes = ["08:00", "08:30", "09:00", "09:30", "10:00", "10:30"];
 
   const ProgressPercentage = step * 33.33;
 
-  const handleNextStep = () => {
-    setStep((prev) => prev + 1);
+  const watchBarberId = form.watch("barberId");
+  const watchAll = form.watch();
+
+  const selectedBarberName = barbers.find(
+    (barber: any) => barber.id === +watchAll.serviceId
+  )?.username;
+
+  const selectedServiceName = services.find(
+    (service) => service.id === +watchAll.serviceId
+  )?.description;
+
+  const selectedLocationName = locations.find(
+    (location) => location?.id === +watchAll.serviceId
+  )?.description;
+
+  const handleNextStep = async () => {
+    const isStepValid = await form.trigger(["username", "email", "phone"]);
+
+    if (!isStepValid) {
+      toast({
+        title: "Erro ao avançar",
+        description: "Verifique todos os campos",
+      });
+    }
+    if (isStepValid) {
+      setStep((prev) => prev + 1);
+    }
   };
 
   const handlePreviousStep = () => {
@@ -126,31 +151,14 @@ const CustomerSchedulePage = () => {
 
   const onSubmit = () => {
     const data = {
-      ...generalInfo,
-      date,
+      ...form.getValues(),
+      date: date?.toISOString(),
       time: selectedTime,
+
+      //start_time and end_time logic, comparing service time
     };
     console.log(data);
   };
-
-  useEffect(() => {
-    const token = Cookies.get("token");
-    const config = {
-      headers: { Authorization: `${token}` },
-    };
-    axios
-      .get("http://localhost:8080/api/service", config)
-      .then((res) => {
-        console.log(res.data);
-        setServices(res.data);
-      })
-      .catch((err) => {
-        console.log(err);
-        toast({
-          title: "Não foi possível buscar os serviços",
-        });
-      });
-  }, []);
 
   useEffect(() => {
     const token = Cookies.get("token");
@@ -165,9 +173,6 @@ const CustomerSchedulePage = () => {
       })
       .catch((err) => {
         console.log(err);
-        toast({
-          title: "Não foi possível buscar os serviços",
-        });
       });
   }, []);
 
@@ -177,18 +182,31 @@ const CustomerSchedulePage = () => {
       headers: { Authorization: `${token}` },
     };
     axios
-      .get("http://localhost:8080/api/location", config)
+      .get("http://localhost:8080/api/location/barber/" + watchBarberId, config)
       .then((res) => {
         console.log(res.data);
         setLocations(res.data);
       })
       .catch((err) => {
         console.log(err);
-        toast({
-          title: "Não foi possível buscar os serviços",
-        });
       });
-  }, []);
+  }, [form.watch, watchBarberId]);
+
+  useEffect(() => {
+    const token = Cookies.get("token");
+    const config = {
+      headers: { Authorization: `${token}` },
+    };
+    axios
+      .get("http://localhost:8080/api/service/barber/" + watchBarberId, config)
+      .then((res) => {
+        console.log(res.data);
+        setServices(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [form.watch, watchBarberId]);
 
   return (
     <div className="relative p-4">
@@ -282,38 +300,9 @@ const CustomerSchedulePage = () => {
                       />
                     </>
                   )}
+
                   {step === 1 && (
                     <>
-                      <FormField
-                        control={form.control}
-                        name="locationId"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Filial</FormLabel>
-                            <Select
-                              onValueChange={field.onChange}
-                              value={field.value}
-                            >
-                              <FormControl>
-                                <SelectTrigger>
-                                  <SelectValue />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                {locations.map((location: any) => (
-                                  <SelectItem
-                                    key={location.id}
-                                    value={`${location.id}`}
-                                  >
-                                    {location.description}
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
                       <FormField
                         control={form.control}
                         name="barberId"
@@ -330,20 +319,63 @@ const CustomerSchedulePage = () => {
                                 </SelectTrigger>
                               </FormControl>
                               <SelectContent>
-                                {barbers.map((barber: any) => (
-                                  <SelectItem
-                                    key={barber.id}
-                                    value={`${barber.id}`}
-                                  >
-                                    {barber.username}
+                                {barbers.length > 0 ? (
+                                  barbers.map((barber: any) => (
+                                    <SelectItem
+                                      key={barber.id}
+                                      value={`${barber.id}`}
+                                    >
+                                      {barber.username}
+                                    </SelectItem>
+                                  ))
+                                ) : (
+                                  <SelectItem disabled value="0">
+                                    Não há barbeiros disponíveis
                                   </SelectItem>
-                                ))}
+                                )}
                               </SelectContent>
                             </Select>
                             <FormMessage />
                           </FormItem>
                         )}
                       />
+                      <FormField
+                        control={form.control}
+                        name="locationId"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Filial</FormLabel>
+                            <Select
+                              onValueChange={field.onChange}
+                              value={field.value}
+                            >
+                              <FormControl>
+                                <SelectTrigger>
+                                  <SelectValue />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                {locations.length > 0 ? (
+                                  locations.map((location: any) => (
+                                    <SelectItem
+                                      key={location.id}
+                                      value={`${location.id}`}
+                                    >
+                                      {location.description}
+                                    </SelectItem>
+                                  ))
+                                ) : (
+                                  <SelectItem disabled value="0">
+                                    Não há filiais disponíveis
+                                  </SelectItem>
+                                )}
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
                       <FormField
                         control={form.control}
                         name="serviceId"
@@ -360,14 +392,20 @@ const CustomerSchedulePage = () => {
                                 </SelectTrigger>
                               </FormControl>
                               <SelectContent>
-                                {services.map((service: Service) => (
-                                  <SelectItem
-                                    key={service.id}
-                                    value={`${service.id}`}
-                                  >
-                                    {service.description}
+                                {services.length > 0 ? (
+                                  services.map((service: Service) => (
+                                    <SelectItem
+                                      key={service.id}
+                                      value={`${service.id}`}
+                                    >
+                                      {service.description}
+                                    </SelectItem>
+                                  ))
+                                ) : (
+                                  <SelectItem disabled value="0">
+                                    Não há serviços disponíveis
                                   </SelectItem>
-                                ))}
+                                )}
                               </SelectContent>
                             </Select>
                             <FormMessage />
@@ -412,13 +450,13 @@ const CustomerSchedulePage = () => {
                           <TableRow>
                             <TableHead className="w-[100px]">Serviço</TableHead>
                             <TableCell className="font-medium">
-                              {generalInfo.service}
+                              {selectedServiceName}
                             </TableCell>
                           </TableRow>
                           <TableRow>
                             <TableHead>Local</TableHead>
                             <TableCell className="font-medium">
-                              {generalInfo.location}
+                              {selectedLocationName}
                             </TableCell>
                           </TableRow>
                           <TableRow>
@@ -436,7 +474,7 @@ const CustomerSchedulePage = () => {
                           <TableRow>
                             <TableHead>Profissional</TableHead>
                             <TableCell className="font-medium">
-                              {generalInfo.barber}
+                              {selectedBarberName}
                             </TableCell>
                           </TableRow>
                         </TableBody>

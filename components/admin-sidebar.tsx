@@ -22,6 +22,7 @@ import {
   AiOutlineUser,
   AiOutlineDropbox,
   AiOutlineScissor,
+  AiOutlineEnvironment,
 } from "react-icons/ai";
 import { BsFillCalendar2CheckFill } from "react-icons/bs";
 import { BiSolidReport } from "react-icons/bi";
@@ -66,6 +67,12 @@ const links = [
     href: "/admin/services",
     label: "Serviços",
     icon: <AiOutlineScissor />,
+    admin: true,
+  },
+  {
+    href: "/admin/locations",
+    label: "Localidades",
+    icon: <AiOutlineEnvironment />,
     admin: true,
   },
   {
