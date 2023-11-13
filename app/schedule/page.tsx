@@ -51,6 +51,7 @@ import { toast } from "@/components/ui/use-toast";
 import { Service } from "../admin/services/service";
 import { UserT } from "@/app/admin/users/user";
 import { LocationT } from "../admin/locations/locations";
+import dayjs from "dayjs";
 
 const formSchema = z.object({
   username: z
@@ -126,6 +127,24 @@ const CustomerSchedulePage = () => {
   const selectedLocationName = locations.find(
     (location) => location?.id === +watchAll.serviceId
   )?.description;
+
+  const selectedBarber = barbers.find(
+    (barber: any) => barber.id === +watchAll.serviceId
+  );
+
+  function calculateFreeWorkTime(start_time: string, end_time: string): number {
+    // Convert start_time and end_time strings to Date objects
+    const startTime = new Date(`2023-01-01T${start_time}`);
+    const endTime = new Date(`2023-01-01T${end_time}`);
+
+    // Calculate the time difference in milliseconds
+    const timeDifference = endTime.getTime() - startTime.getTime();
+
+    // Convert the time difference from milliseconds to hours
+    const freeWorkTimeHours = timeDifference / (1000 * 60 * 60);
+
+    return freeWorkTimeHours;
+  }
 
   const handleNextStep = async () => {
     const isStepValid = await form.trigger(["username", "email", "phone"]);
@@ -207,6 +226,15 @@ const CustomerSchedulePage = () => {
         console.log(err);
       });
   }, [form.watch, watchBarberId]);
+
+  useEffect(() => {
+    console.log(
+      calculateFreeWorkTime(
+        selectedBarber?.start_time,
+        selectedBarber?.end_time
+      )
+    );
+  }, [selectedBarber]);
 
   return (
     <div className="relative p-4">

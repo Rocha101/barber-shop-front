@@ -74,7 +74,7 @@ const formSchema = z.object({
     .optional(),
 });
 
-const EditUser = ({ params }: { params: { id: string } }) => {
+const CreateSale = ({ params }: { params: { id: string } }) => {
   const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -92,6 +92,17 @@ const EditUser = ({ params }: { params: { id: string } }) => {
   const [selectedProducts, setSelectedProducts] = useState<any[]>();
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [data, setData] = useState([]);
+
+  const totalPriceSum = (products: Product[]) => {
+    return products.reduce(
+      (sum, product) => sum + product.price * product.quantity,
+      0
+    );
+  };
+
+  const totalQuantitySum = (products: Product[]) => {
+    return products.reduce((sum, product) => sum + product.quantity, 0);
+  };
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     const token = Cookies.get("token");
@@ -323,25 +334,10 @@ const EditUser = ({ params }: { params: { id: string } }) => {
                         Total
                       </TableCell>
                       <TableCell>
-                        R${" "}
-                        {selectedProducts && selectedProducts?.length > 0
-                          ? selectedProducts?.reduce(
-                              (sum, product) => sum + product.price,
-                              0
-                            ) *
-                            selectedProducts?.reduce(
-                              (sum, product) => sum + product.quantity,
-                              0
-                            )
-                          : 0}
+                        R$ {totalPriceSum(selectedProducts || []).toFixed(2)}
                       </TableCell>
                       <TableCell>
-                        {selectedProducts && selectedProducts?.length > 0
-                          ? selectedProducts?.reduce(
-                              (sum, product) => sum + product.quantity,
-                              0
-                            )
-                          : 0}
+                        {totalQuantitySum(selectedProducts || [])}
                       </TableCell>
                     </TableRow>
                   </TableBody>
@@ -358,7 +354,7 @@ const EditUser = ({ params }: { params: { id: string } }) => {
                 placeholder="Pesquisar..."
                 className="w-[200px]"
               />
-              <div className="py-4 max-h-full flex-1 overflow-y-auto flex-wrap gap-2">
+              <div className="py-4 max-h-full flex-1 overflow-y-auto flex gap-2">
                 {filteredProducts && filteredProducts.length > 0 ? (
                   filteredProducts?.map((product) => (
                     <div
@@ -398,4 +394,4 @@ const EditUser = ({ params }: { params: { id: string } }) => {
   );
 };
 
-export default EditUser;
+export default CreateSale;

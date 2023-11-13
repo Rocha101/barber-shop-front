@@ -32,4 +32,19 @@ export const columns: ColumnDef<Order>[] = [
       return <span>{formatMoney(+row.original.total_price)}</span>;
     },
   },
+  /* {
+    accessorKey: "status",
+    header: "Produtos",
+    cell: ({ row }) => {
+      return (
+        <div className="flex flex-col gap-2">
+          {row.original.products.map((product) => (
+            <p key={product.id} className="bg-green-600 text-black text-lg">
+              {product.name}
+            </p>
+          ))}
+        </div>
+      );
+    },
+  }, */
 ];
