@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog";
 import { Close } from "@radix-ui/react-dialog";
@@ -12,10 +12,8 @@ import {
 } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
-import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
 import { Label } from "./ui/label";
-import { Popover, PopoverTrigger, PopoverContent } from "./ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Select,
@@ -24,16 +22,12 @@ import {
   SelectContent,
   SelectItem,
 } from "./ui/select";
-import { Toggle } from "./ui/toggle";
 import { Input } from "./ui/input";
-import { toast } from "./ui/use-toast";
 import {
   AiOutlineArrowRight,
   AiOutlineArrowLeft,
   AiOutlineClose,
 } from "react-icons/ai";
-import { BsCalendarPlus } from "react-icons/bs";
-import { IoMdSave } from "react-icons/io";
 
 type Local = {
   id: number;
@@ -108,128 +102,6 @@ const Calendar = ({ events, dayChildren }: any) => {
     isSameMonth(new Date(event.date), currentDate)
   );
 
-  /* const onSubmit = () => {
-    const data = {
-      title: eventInfo?.title,
-      description: eventInfo?.description,
-      date: eventInfo?.date,
-      start_time: eventInfo?.start_time,
-      end_time: eventInfo?.end_time,
-      location_id: eventInfo?.location || 1,
-      color: selectedColor,
-    };
-    console.log(data);
-    apiBase
-      .post("/calendar", data)
-      .then((response) => {
-        console.log(response.data);
-        toast({
-          title: "Evento criado com sucesso!",
-        });
-        setEventDialogOpen(0);
-        window.location.reload();
-      })
-      .catch((error) => {
-        console.log(error);
-        toast({
-          title: "Erro ao criar evento",
-        });
-      });
-  };
-
-  const onDelete = (id: number) => {
-    apiBase
-      .post(`/calendar/deactivate`, { id: id })
-      .then((response) => {
-        console.log(response.data);
-        setViewMoreDialogOpen(0);
-        toast({
-          title: "Evento apagado com sucesso!",
-        });
-        window.location.reload();
-      })
-      .catch((error) => {
-        console.log(error);
-        toast({
-          title: "Erro ao apagar evento",
-        });
-      });
-  };
-
-  const onEdit = (id: number) => {
-    const data = {
-      title: eventEditInfo.title,
-      description: eventEditInfo.description,
-      date: eventEditInfo.date,
-      start_time: eventEditInfo.start_time,
-      end_time: eventEditInfo.end_time,
-      color: eventEditInfo.color,
-      location_id: eventEditInfo.location.id,
-    };
-    console.log(data);
-    apiBase
-      .put(`/calendar/${id}`, data)
-      .then((response) => {
-        console.log(response.data);
-        setViewMoreDialogOpen(0);
-        toast({
-          title: "Evento editado com sucesso!",
-        });
-        window.location.reload();
-        setEditMode(false);
-      })
-      .catch((error) => {
-        console.log(error);
-        toast({
-          title: "Erro ao editar evento",
-        });
-      });
-  };
-
-  const createLocation = () => {
-    if (searchParam === "") {
-      toast({
-        title: "Insira um nome para o local",
-      });
-      return;
-    }
-    const data = { description: searchParam };
-    apiBase
-      .post("/location", data)
-      .then((response) => {
-        console.log(response.data);
-        apiBase
-          .get("/location")
-          .then((response) => {
-            setLocations(response.data);
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-        setSearchParam("");
-      })
-      .catch((error) => {
-        console.log(error);
-        toast({
-          title: "Erro ao criar local",
-        });
-      });
-  };
-
-
-
-  useEffect(() => {
-    apiBase
-      .get("/location")
-      .then((response) => {
-        setLocations(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
- */
-
   const handleClear = () => {
     setEventInfo({
       title: "",
@@ -299,7 +171,6 @@ const Calendar = ({ events, dayChildren }: any) => {
                         <DialogTrigger asChild>
                           <div
                             key={event.id}
-                            // eslint-disable-next-line tailwindcss/classnames-order
                             className={`flex w-full justify-start rounded border p-1 bg-gray-900 text-white cursor-pointer`}
                             onClick={() => {
                               setViewMoreDialogOpen(event.id);
