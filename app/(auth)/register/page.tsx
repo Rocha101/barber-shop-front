@@ -61,7 +61,7 @@ const formSchema = z
     path: ["confirmPassword"],
   });
 
-const Login = () => {
+const Entrar = () => {
   const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -113,7 +113,7 @@ const Login = () => {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center p-24 gap-10">
       <div className="flex flex-col border p-4 rounded-md w-96">
-        <h1 className="text-3xl font-bold mb-5">Registro</h1>
+        <h1 className="text-3xl font-bold mb-5">Cadastro</h1>
         <Form {...form}>
           <form
             className="flex flex-col gap-4"
@@ -237,7 +237,7 @@ const Login = () => {
               )}
             />
 
-            <Button>Registrar</Button>
+            <Button>Cadastrar</Button>
           </form>
         </Form>
         <div className="w-full flex items-center justify-center mt-3">
@@ -250,4 +250,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Entrar;

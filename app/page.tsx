@@ -13,7 +13,7 @@ export default function Home() {
           </Button>
         </Link>
         <Link href="/login" passHref>
-          <Button size="lg">Login</Button>
+          <Button size="lg">Entrar</Button>
         </Link>
       </div>
     </main>

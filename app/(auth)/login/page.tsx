@@ -33,7 +33,7 @@ const formSchema = z.object({
     .min(6, { message: "Senha deve ter no mínimo 6 caracteres" }),
 });
 
-const Login = () => {
+const Entrar = () => {
   const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -99,7 +99,7 @@ const Login = () => {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center p-24 gap-10">
       <div className="flex flex-col border p-4 rounded-md w-96">
-        <h1 className="text-3xl font-bold mb-5">Login</h1>
+        <h1 className="text-3xl font-bold mb-5">Entrar</h1>
         <Form {...form}>
           <form
             className="flex flex-col gap-4"
@@ -150,7 +150,7 @@ const Login = () => {
               )}
             />
 
-            <Button type="submit">Login</Button>
+            <Button type="submit">Entrar</Button>
           </form>
         </Form>
         <div className="w-full flex items-center justify-center mt-3">
@@ -163,4 +163,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Entrar;

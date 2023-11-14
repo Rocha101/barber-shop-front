@@ -19,6 +19,7 @@ import { columns } from "./columns";
 import { BiCalendar, BiTable } from "react-icons/bi";
 import Cookies from "js-cookie";
 import axios from "axios";
+import { Schedule } from "./schedule";
 
 const SchedulesPage = () => {
   const [currentMonth, setCurrentMonth] = useState<Date>(
@@ -27,46 +28,7 @@ const SchedulesPage = () => {
 
   const [filterValue, setFilterValue] = useState<string>("all");
 
-  const [events, setEvents] = useState<any[]>([]);
-
-  /*  const events: Schedule[] = [
-    {
-      title: "Degradê",
-      description: "Cliente: Joãozinho",
-      date: new Date(),
-      start_time: "08:00",
-      end_time: "08:30",
-      location: "Pinheirinho",
-      color: "blue",
-    },
-    {
-      title: "Degradê",
-      description: "Cliente: Joãozinho",
-      date: new Date(),
-      start_time: "09:00",
-      end_time: "08:30",
-      location: "Próspera",
-      color: "blue",
-    },
-    {
-      title: "Degradê",
-      description: "Cliente: Joãozinho",
-      date: new Date(),
-      start_time: "18:00",
-      end_time: "18:45",
-      location: "Centro",
-      color: "blue",
-    },
-    {
-      title: "Degradê",
-      description: "Cliente: Joãozinho",
-      date: new Date("2023-01-10"),
-      start_time: "18:00",
-      end_time: "18:45",
-      location: "Centro",
-      color: "blue",
-    },
-  ]; */
+  const [events, setEvents] = useState<Schedule[]>([]);
 
   const filteredEvents = events.filter((event) => {
     const date = new Date(event.events.end_time);

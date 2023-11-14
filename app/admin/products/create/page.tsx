@@ -153,7 +153,7 @@ const EditUser = ({ params }: { params: { id: string } }) => {
             />
 
             <Button className="w-32" type="submit">
-              Registrar
+              Cadastrar
             </Button>
           </form>
         </Form>

@@ -25,6 +25,7 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useHookFormMask } from "use-mask-input";
+import Cookies from "js-cookie";
 
 const formSchema = z.object({
   id: z.number(),
@@ -49,6 +50,8 @@ const formSchema = z.object({
       required_error: "Senha obrigatória",
     })
     .min(6, { message: "Senha deve ter no mínimo 6 caracteres" }),
+  start_time: z.string(),
+  end_time: z.string(),
 });
 
 const EditUser = ({ params }: { params: { id: string } }) => {
@@ -70,14 +73,17 @@ const EditUser = ({ params }: { params: { id: string } }) => {
   const [visiblePass, setVisiblePass] = useState(false);
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+    const token = Cookies.get("token");
     const config = {
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { Authorization: `${token}` },
     };
+    console.log(values);
     axios
-      .put("http://localhost:8080/api/barbers", values, config)
+      .put(
+        "http://localhost:8080/api/user/" + form.getValues("id"),
+        values,
+        config
+      )
       .then((res) => {
         console.log(res);
         toast({
@@ -95,13 +101,14 @@ const EditUser = ({ params }: { params: { id: string } }) => {
   }
 
   useEffect(() => {
+    const token = Cookies.get("token");
+    const config = {
+      headers: { Authorization: `${token}` },
+    };
     axios
-      .get("http://localhost:8080/api/barbers/" + params.id)
+      .get("http://localhost:8080/api/user/" + params.id, config)
       .then((res) => {
-        form.setValue("email", res.data.email);
-        form.setValue("password", res.data.password);
-        form.setValue("username", res.data.username);
-        form.setValue("phone", res.data.phone);
+        form.reset(res.data);
       })
       .catch((err) => {
         console.log(err);
@@ -216,8 +223,36 @@ const EditUser = ({ params }: { params: { id: string } }) => {
               )}
             />
 
+            <FormField
+              control={form.control}
+              name="start_time"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>Início Expediente</FormLabel>
+                  <FormControl>
+                    <Input type="time" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="end_time"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>Fim Expediente</FormLabel>
+                  <FormControl>
+                    <Input type="time" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
             <Button className="w-32" type="submit">
-              Registrar
+              Cadastrar
             </Button>
           </form>
         </Form>

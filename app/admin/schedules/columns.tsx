@@ -1,19 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import { ColumnDef } from "@tanstack/react-table";
 
-import { Button } from "@/components/ui/button";
-
-interface Schedule {
-  title: string;
-  description: string;
-  date: Date;
-  start_time: string;
-  end_time: string;
-  location: string;
-  color: string;
-}
+import { Schedule } from "./schedule";
 
 export const columns: ColumnDef<Schedule>[] = [
   {
@@ -35,9 +24,16 @@ export const columns: ColumnDef<Schedule>[] = [
     accessorKey: "date",
     header: "Data",
     cell: ({ row }) => {
+      const date = new Date(row.original.events.start_time);
+      const hourMinute = new Intl.DateTimeFormat("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+      }).format(date);
+
       return (
         <div className="flex flex-col gap-1">
-          <span className="text-sm">{row.original.events.start_time}</span>
+          <span className="text-sm">{hourMinute}</span>
         </div>
       );
     },
@@ -46,10 +42,23 @@ export const columns: ColumnDef<Schedule>[] = [
     accessorKey: "",
     header: "Horário",
     cell: ({ row }) => {
+      const start_date = new Date(row.original.events.start_time);
+      const start_hourMinute = new Intl.DateTimeFormat("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+      }).format(start_date);
+
+      const end_date = new Date(row.original.events.start_time);
+      const end_hourMinute = new Intl.DateTimeFormat("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+      }).format(end_date);
       return (
         <div className="flex flex-col gap-1">
           <span className="">
-            {row.original.events.start_time} - {row.original.events.end_time}
+            {start_hourMinute} - {end_hourMinute}
           </span>
         </div>
       );
