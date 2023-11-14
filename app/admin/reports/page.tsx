@@ -1,6 +1,5 @@
 "use client";
-import { PDFViewer } from "@react-pdf/renderer";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import GeneralReport from "./report";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -66,9 +65,7 @@ const ReportsPage = () => {
         <Button onClick={getReports}>Gerar Relatório</Button>
       </div>
       <div className="h-full w-full">
-        <PDFViewer style={{ width: "100%", height: "100%" }}>
-          <GeneralReport data={data} />
-        </PDFViewer>
+        <GeneralReport data={data} />
       </div>
     </div>
   );

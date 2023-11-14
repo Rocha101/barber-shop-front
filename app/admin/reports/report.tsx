@@ -1,5 +1,14 @@
+"use client";
+
 import React from "react";
-import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
+import {
+  Document,
+  Page,
+  Text,
+  View,
+  StyleSheet,
+  PDFViewer,
+} from "@react-pdf/renderer";
 import { ReportT } from "./report-type";
 
 // Create styles
@@ -30,22 +39,24 @@ const styles = StyleSheet.create({
 
 // Create Document Component
 const GeneralReport = ({ data }: { data: ReportT | undefined }) => (
-  <Document>
-    <Page size="A4" style={styles.page}>
-      <View style={styles.section}>
-        <Text style={styles.title}>Relatório Barbearia - Vendas</Text>
-        <Text style={styles.topics}>
-          Total de vendas: {data?.totalSales || "Não informado"}
-        </Text>
-        <Text style={styles.topics}>
-          Faturamento total: {data?.totalMoney || "Não informado"}
-        </Text>
-        <Text style={styles.topics}>
-          Total de clientes: {data?.numberOfCustomers || "Não informado"}
-        </Text>
-      </View>
-    </Page>
-  </Document>
+  <PDFViewer style={{ width: "100%", height: "100%" }}>
+    <Document>
+      <Page size="A4" style={styles.page}>
+        <View style={styles.section}>
+          <Text style={styles.title}>Relatório Barbearia - Vendas</Text>
+          <Text style={styles.topics}>
+            Total de vendas: {data?.totalSales || "Não informado"}
+          </Text>
+          <Text style={styles.topics}>
+            Faturamento total: {data?.totalMoney || "Não informado"}
+          </Text>
+          <Text style={styles.topics}>
+            Total de clientes: {data?.numberOfCustomers || "Não informado"}
+          </Text>
+        </View>
+      </Page>
+    </Document>
+  </PDFViewer>
 );
 
 export default GeneralReport;
