@@ -1,9 +1,8 @@
 "use client";
 
-import * as React from "react";
+import react, { useEffect, useState } from "react";
 
 import Calendar from "@/components/calendar";
-import { useState } from "react";
 import { startOfMonth } from "date-fns";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DataTable } from "@/components/data-table";
@@ -18,16 +17,8 @@ import {
 } from "@/components/ui/select";
 import { columns } from "./columns";
 import { BiCalendar, BiTable } from "react-icons/bi";
-
-interface Schedule {
-  title: string;
-  description: string;
-  date: Date;
-  start_time: string;
-  end_time: string;
-  location: string;
-  color: string;
-}
+import Cookies from "js-cookie";
+import axios from "axios";
 
 const SchedulesPage = () => {
   const [currentMonth, setCurrentMonth] = useState<Date>(
@@ -36,7 +27,9 @@ const SchedulesPage = () => {
 
   const [filterValue, setFilterValue] = useState<string>("all");
 
-  const events: Schedule[] = [
+  const [events, setEvents] = useState<any[]>([]);
+
+  /*  const events: Schedule[] = [
     {
       title: "Degradê",
       description: "Cliente: Joãozinho",
@@ -73,10 +66,10 @@ const SchedulesPage = () => {
       location: "Centro",
       color: "blue",
     },
-  ];
+  ]; */
 
   const filteredEvents = events.filter((event) => {
-    const date = new Date(event.date);
+    const date = new Date(event.events.end_time);
 
     switch (filterValue) {
       case "today":
@@ -104,6 +97,25 @@ const SchedulesPage = () => {
         return true;
     }
   });
+
+  useEffect(() => {
+    const token = Cookies.get("token");
+    const user = JSON.parse(Cookies.get("user") || "{}");
+    console.log(token);
+    const url = `http://localhost:8080/api/schedule`;
+    const config = {
+      headers: { Authorization: `${token}` },
+    };
+    axios
+      .get(url, config)
+      .then((response) => {
+        console.log(response.data);
+        setEvents(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
 
   return (
     <div className="flex flex-col gap-2">

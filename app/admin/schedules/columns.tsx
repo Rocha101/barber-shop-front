@@ -19,6 +19,13 @@ export const columns: ColumnDef<Schedule>[] = [
   {
     accessorKey: "title",
     header: "Titulo",
+    cell: ({ row }) => {
+      return (
+        <div className="flex flex-col gap-1">
+          <span className="text-sm">{row.original.events.title}</span>
+        </div>
+      );
+    },
   },
   {
     accessorKey: "description",
@@ -30,9 +37,7 @@ export const columns: ColumnDef<Schedule>[] = [
     cell: ({ row }) => {
       return (
         <div className="flex flex-col gap-1">
-          <span className="text-sm">
-            {row.original.date.toLocaleDateString("pt-BR")}
-          </span>
+          <span className="text-sm">{row.original.events.start_time}</span>
         </div>
       );
     },
@@ -44,14 +49,14 @@ export const columns: ColumnDef<Schedule>[] = [
       return (
         <div className="flex flex-col gap-1">
           <span className="">
-            {row.original.start_time} - {row.original.end_time}
+            {row.original.events.start_time} - {row.original.events.end_time}
           </span>
         </div>
       );
     },
   },
   {
-    accessorKey: "location",
+    accessorKey: "locationId",
     header: "Localização",
   },
   /*  {

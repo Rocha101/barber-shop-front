@@ -106,7 +106,6 @@ const CreateSale = ({ params }: { params: { id: string } }) => {
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     const token = Cookies.get("token");
-    axios;
     const data: Sale = {
       customerInfo: {
         name: values.name,

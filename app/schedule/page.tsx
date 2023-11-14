@@ -52,6 +52,9 @@ import { Service } from "../admin/services/service";
 import { UserT } from "@/app/admin/users/user";
 import { LocationT } from "../admin/locations/locations";
 import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat";
+
+dayjs.extend(customParseFormat);
 
 const formSchema = z.object({
   username: z
@@ -73,7 +76,7 @@ const formSchema = z.object({
   serviceId: z.string({
     required_error: "Empresa obrigatória",
   }),
-  barberId: z.string({
+  userId: z.string({
     required_error: "Profissional obrigatória",
   }),
   locationId: z.string({
@@ -113,7 +116,7 @@ const CustomerSchedulePage = () => {
 
   const ProgressPercentage = step * 33.33;
 
-  const watchBarberId = form.watch("barberId");
+  const watchuserId = form.watch("userId");
   const watchAll = form.watch();
 
   const selectedBarberName = barbers.find(
@@ -132,19 +135,9 @@ const CustomerSchedulePage = () => {
     (barber: any) => barber.id === +watchAll.serviceId
   );
 
-  function calculateFreeWorkTime(start_time: string, end_time: string): number {
-    // Convert start_time and end_time strings to Date objects
-    const startTime = new Date(`2023-01-01T${start_time}`);
-    const endTime = new Date(`2023-01-01T${end_time}`);
-
-    // Calculate the time difference in milliseconds
-    const timeDifference = endTime.getTime() - startTime.getTime();
-
-    // Convert the time difference from milliseconds to hours
-    const freeWorkTimeHours = timeDifference / (1000 * 60 * 60);
-
-    return freeWorkTimeHours;
-  }
+  const serviceDuration = services.find(
+    (service) => service.id === +watchAll.serviceId
+  )?.total_time;
 
   const handleNextStep = async () => {
     const isStepValid = await form.trigger(["username", "email", "phone"]);
@@ -169,14 +162,39 @@ const CustomerSchedulePage = () => {
   };
 
   const onSubmit = () => {
+    const url = `http://localhost:8080/api/schedule`;
+
     const data = {
       ...form.getValues(),
-      date: date?.toISOString(),
-      time: selectedTime,
-
-      //start_time and end_time logic, comparing service time
+      start_time: dayjs(selectedBarber?.start_time, "HH:mm").toISOString(),
+      end_time: dayjs(selectedBarber?.start_time, "HH:mm")
+        .add(30, "m")
+        .toISOString(),
     };
-    console.log(data);
+    console.log("data", data);
+
+    console.log("start", selectedBarber?.start_time);
+    console.log("end", serviceDuration);
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    axios
+      .post(url, data, config)
+      .then((res) => {
+        console.log(res);
+        toast({
+          title: "Agendado com sucesso!",
+        });
+        form.reset();
+      })
+      .catch((err) => {
+        console.log(err);
+        toast({
+          title: "Não foi possível agendar!",
+        });
+      });
   };
 
   useEffect(() => {
@@ -201,7 +219,7 @@ const CustomerSchedulePage = () => {
       headers: { Authorization: `${token}` },
     };
     axios
-      .get("http://localhost:8080/api/location/barber/" + watchBarberId, config)
+      .get("http://localhost:8080/api/location/barber/" + watchuserId, config)
       .then((res) => {
         console.log(res.data);
         setLocations(res.data);
@@ -209,7 +227,7 @@ const CustomerSchedulePage = () => {
       .catch((err) => {
         console.log(err);
       });
-  }, [form.watch, watchBarberId]);
+  }, [form.watch, watchuserId]);
 
   useEffect(() => {
     const token = Cookies.get("token");
@@ -217,7 +235,7 @@ const CustomerSchedulePage = () => {
       headers: { Authorization: `${token}` },
     };
     axios
-      .get("http://localhost:8080/api/service/barber/" + watchBarberId, config)
+      .get("http://localhost:8080/api/service/barber/" + watchuserId, config)
       .then((res) => {
         console.log(res.data);
         setServices(res.data);
@@ -225,16 +243,7 @@ const CustomerSchedulePage = () => {
       .catch((err) => {
         console.log(err);
       });
-  }, [form.watch, watchBarberId]);
-
-  useEffect(() => {
-    console.log(
-      calculateFreeWorkTime(
-        selectedBarber?.start_time,
-        selectedBarber?.end_time
-      )
-    );
-  }, [selectedBarber]);
+  }, [form.watch, watchuserId]);
 
   return (
     <div className="relative p-4">
@@ -333,7 +342,7 @@ const CustomerSchedulePage = () => {
                     <>
                       <FormField
                         control={form.control}
-                        name="barberId"
+                        name="userId"
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>Barbeiro</FormLabel>
