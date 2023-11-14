@@ -95,7 +95,6 @@ const CreateSale = ({ params }: { params: { id: string } }) => {
   };
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    const token = Cookies.get("token");
     const data: Sale = {
       customerInfo: {
         name: values.name,
@@ -118,14 +117,9 @@ const CreateSale = ({ params }: { params: { id: string } }) => {
       });
       return;
     }
-
-    console.log(data);
     const url = `/sale`;
-    const config = {
-      headers: { Authorization: `${token}` },
-    };
     api
-      .post(url, data, config)
+      .post(url, data)
       .then((res) => {
         console.log(res);
         toast({
@@ -160,15 +154,9 @@ const CreateSale = ({ params }: { params: { id: string } }) => {
   };
 
   useEffect(() => {
-    const token = Cookies.get("token");
-    const user = JSON.parse(Cookies.get("user") || "{}");
-    console.log(token);
     const url = `/product`;
-    const config = {
-      headers: { Authorization: `${token}` },
-    };
     api
-      .get(url, config)
+      .get(url)
       .then((response) => {
         console.log(response);
         setProducts(response.data);

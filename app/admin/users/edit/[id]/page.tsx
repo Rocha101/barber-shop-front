@@ -72,13 +72,8 @@ const EditUser = ({ params }: { params: { id: string } }) => {
   const [visiblePass, setVisiblePass] = useState(false);
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    const token = Cookies.get("token");
-    const config = {
-      headers: { Authorization: `${token}` },
-    };
-    console.log(values);
     api
-      .put("/user/" + form.getValues("id"), values, config)
+      .put("/user/" + form.getValues("id"), values)
       .then((res) => {
         console.log(res);
         toast({
@@ -96,12 +91,8 @@ const EditUser = ({ params }: { params: { id: string } }) => {
   }
 
   useEffect(() => {
-    const token = Cookies.get("token");
-    const config = {
-      headers: { Authorization: `${token}` },
-    };
     api
-      .get("/user/" + params.id, config)
+      .get("/user/" + params.id)
       .then((res) => {
         form.reset(res.data);
       })

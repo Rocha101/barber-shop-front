@@ -17,14 +17,9 @@ const UsersPage = () => {
   const [barbers, setBarbers] = useState<any>(null);
 
   useEffect(() => {
-    const token = Cookies.get("token");
-    console.log(token);
     const url = `/user`;
-    const config = {
-      headers: { Authorization: `${token}` },
-    };
     api
-      .get(url, config)
+      .get(url)
       .then((response) => {
         console.log(response);
         setBarbers(response.data);

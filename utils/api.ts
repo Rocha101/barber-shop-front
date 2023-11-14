@@ -1,26 +1,27 @@
 import axios, { AxiosInstance } from "axios";
 import Cookies from "js-cookie";
-import { config } from "../config";
+
+/* "https://api-barber-shop-7qds.onrender.com/api" */
 
 const api: AxiosInstance = axios.create({
-  baseURL: "https://api-barber-shop-7qds.onrender.com/api",
+  baseURL: process.env.apiKey,
 });
 
-// api.interceptors.request.use(
-//   (config) => {
-//     // Get the bearer token from wherever you store it (localStorage, state, etc.)
-//     const token = Cookies.get("token"); // Replace this with your actual logic to retrieve the token
+api.interceptors.request.use(
+  (config) => {
+    // Get the bearer token from wherever you store it (localStorage, state, etc.)
+    const token = Cookies.get("token"); // Replace this with your actual logic to retrieve the token
 
-//     if (token) {
-//       // If a token is available, set it in the request headers
-//       config.headers.Authorization = `${token}`;
-//     }
+    if (token) {
+      // If a token is available, set it in the request headers
+      config.headers.Authorization = `${token}`;
+    }
 
-//     return config;
-//   },
-//   (error) => {
-//     return Promise.reject(error);
-//   }
-// );
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
 export default api;

@@ -3,18 +3,10 @@ import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import Cookies from "js-cookie";
 import { toast } from "@/components/ui/use-toast";
 import { ReportT } from "./report-type";
 import api from "@/utils/api";
-import {
-  Document,
-  Page,
-  Text,
-  View,
-  StyleSheet,
-  PDFViewer,
-} from "@react-pdf/renderer";
+import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
 
 const ReportsPage = () => {
   const [data, setData] = useState<ReportT>();
@@ -29,15 +21,9 @@ const ReportsPage = () => {
       });
       return;
     }
-    const token = Cookies.get("token");
-    const user = JSON.parse(Cookies.get("user") || "{}");
-    console.log(token);
     const url = `/report?startDate=${initialDate}&endDate=${endDate}`;
-    const config = {
-      headers: { Authorization: `${token}` },
-    };
     api
-      .get(url, config)
+      .get(url)
       .then((response) => {
         console.log(response);
         setData(response.data);

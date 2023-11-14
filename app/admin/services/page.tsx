@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "@/components/ui/use-toast";
-import Cookies from "js-cookie";
 import Link from "next/link";
 import { DataTable } from "@/components/data-table";
 import { Service } from "./service";
@@ -16,12 +15,8 @@ const Services = () => {
   const [service, setService] = useState<Service[]>([]);
 
   useEffect(() => {
-    const token = Cookies.get("token");
-    const config = {
-      headers: { Authorization: `${token}` },
-    };
     api
-      .get("/service", config)
+      .get("/service")
       .then((res) => {
         console.log(res.data);
         setService(res.data);

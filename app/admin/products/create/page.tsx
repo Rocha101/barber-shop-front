@@ -59,7 +59,6 @@ const EditUser = ({ params }: { params: { id: string } }) => {
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    const token = Cookies.get("token");
     const data = {
       description: values.description,
       price: parseFloat(Number(values.price).toFixed(2)),
@@ -69,11 +68,8 @@ const EditUser = ({ params }: { params: { id: string } }) => {
     };
     console.log(data);
     const url = `/product`;
-    const config = {
-      headers: { Authorization: `${token}` },
-    };
     api
-      .post(url, data, config)
+      .post(url, data)
       .then((res) => {
         console.log(res);
         toast({

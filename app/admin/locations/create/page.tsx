@@ -44,18 +44,13 @@ const EditUser = ({ params }: { params: { id: string } }) => {
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    const token = Cookies.get("token");
     const data: Location = {
       description: values.description,
       userId: JSON.parse(Cookies.get("user") || "{}").id,
     };
-    console.log(data);
     const url = `/location`;
-    const config = {
-      headers: { Authorization: `${token}` },
-    };
     api
-      .post(url, data, config)
+      .post(url, data)
       .then((res) => {
         console.log(res);
         toast({

@@ -36,11 +36,7 @@ const EditService = () => {
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    const token = Cookies.get("token");
     const user = JSON.parse(Cookies.get("user") || "{}");
-    const config = {
-      headers: { Authorization: `${token}` },
-    };
     const data = {
       ...values,
       price: Number(values.price),
@@ -48,7 +44,7 @@ const EditService = () => {
     };
     console.log(data);
     api
-      .post("/service", data, config)
+      .post("/service", data)
       .then((res) => {
         console.log(res);
         router.push("/admin/services");

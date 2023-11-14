@@ -42,7 +42,6 @@ import { ptBR } from "date-fns/locale";
 import Link from "next/link";
 import { BsWhatsapp } from "react-icons/bs";
 import { useHookFormMask } from "use-mask-input";
-import Cookies from "js-cookie";
 import { toast } from "@/components/ui/use-toast";
 import { Service } from "../admin/services/service";
 import { UserT } from "@/app/admin/users/user";
@@ -188,12 +187,8 @@ const CustomerSchedulePage = () => {
   };
 
   useEffect(() => {
-    const token = Cookies.get("token");
-    const config = {
-      headers: { Authorization: `${token}` },
-    };
     api
-      .get("/user", config)
+      .get("/user")
       .then((res) => {
         console.log(res.data);
         setBarbers(res.data);
@@ -204,12 +199,8 @@ const CustomerSchedulePage = () => {
   }, []);
 
   useEffect(() => {
-    const token = Cookies.get("token");
-    const config = {
-      headers: { Authorization: `${token}` },
-    };
     api
-      .get("/location/barber/" + watchuserId, config)
+      .get("/location/barber/" + watchuserId)
       .then((res) => {
         console.log(res.data);
         setLocations(res.data);
@@ -220,12 +211,8 @@ const CustomerSchedulePage = () => {
   }, [form.watch, watchuserId]);
 
   useEffect(() => {
-    const token = Cookies.get("token");
-    const config = {
-      headers: { Authorization: `${token}` },
-    };
     api
-      .get("/service/barber/" + watchuserId, config)
+      .get("/service/barber/" + watchuserId)
       .then((res) => {
         console.log(res.data);
         setServices(res.data);

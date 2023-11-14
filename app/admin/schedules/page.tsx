@@ -60,15 +60,9 @@ const SchedulesPage = () => {
   });
 
   useEffect(() => {
-    const token = Cookies.get("token");
-    const user = JSON.parse(Cookies.get("user") || "{}");
-    console.log(token);
     const url = `/schedule`;
-    const config = {
-      headers: { Authorization: `${token}` },
-    };
     api
-      .get(url, config)
+      .get(url)
       .then((response) => {
         console.log(response.data);
         setEvents(response.data);
