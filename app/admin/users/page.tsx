@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import axios from "axios";
 
 import exportExcel from "@/lib/excelExport";
 import { Button } from "@/components/ui/button";
@@ -10,6 +9,7 @@ import { DataTable } from "@/components/data-table";
 
 import { columns } from "./columns";
 import Cookies from "js-cookie";
+import api from "@/utils/api";
 
 const UsersPage = () => {
   const router = useRouter();
@@ -19,11 +19,11 @@ const UsersPage = () => {
   useEffect(() => {
     const token = Cookies.get("token");
     console.log(token);
-    const url = `http://localhost:8080/api/user`;
+    const url = `/user`;
     const config = {
       headers: { Authorization: `${token}` },
     };
-    axios
+    api
       .get(url, config)
       .then((response) => {
         console.log(response);

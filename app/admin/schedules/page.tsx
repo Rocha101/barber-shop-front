@@ -1,6 +1,6 @@
 "use client";
 
-import react, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import Calendar from "@/components/calendar";
 import { startOfMonth } from "date-fns";
@@ -11,15 +11,14 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
 import { columns } from "./columns";
 import { BiCalendar, BiTable } from "react-icons/bi";
 import Cookies from "js-cookie";
-import axios from "axios";
 import { Schedule } from "./schedule";
+import api from "@/utils/api";
 
 const SchedulesPage = () => {
   const [currentMonth, setCurrentMonth] = useState<Date>(
@@ -64,11 +63,11 @@ const SchedulesPage = () => {
     const token = Cookies.get("token");
     const user = JSON.parse(Cookies.get("user") || "{}");
     console.log(token);
-    const url = `http://localhost:8080/api/schedule`;
+    const url = `/schedule`;
     const config = {
       headers: { Authorization: `${token}` },
     };
-    axios
+    api
       .get(url, config)
       .then((response) => {
         console.log(response.data);

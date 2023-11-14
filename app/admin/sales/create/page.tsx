@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { infer, z } from "zod";
+import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -15,16 +15,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
-import {
-  AiFillCheckCircle,
-  AiFillDelete,
-  AiOutlineArrowLeft,
-  AiOutlineCheck,
-  AiOutlineCheckCircle,
-  AiOutlineClose,
-  AiOutlinePlus,
-} from "react-icons/ai";
-import axios from "axios";
+import { AiOutlineArrowLeft, AiOutlineCheckCircle } from "react-icons/ai";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
@@ -33,11 +24,10 @@ import {
   Table,
   TableBody,
   TableCell,
-  TableFooter,
-  TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import api from "@/utils/api";
 
 interface Product {
   id: number;
@@ -130,11 +120,11 @@ const CreateSale = ({ params }: { params: { id: string } }) => {
     }
 
     console.log(data);
-    const url = `http://localhost:8080/api/sale`;
+    const url = `/sale`;
     const config = {
       headers: { Authorization: `${token}` },
     };
-    axios
+    api
       .post(url, data, config)
       .then((res) => {
         console.log(res);
@@ -173,11 +163,11 @@ const CreateSale = ({ params }: { params: { id: string } }) => {
     const token = Cookies.get("token");
     const user = JSON.parse(Cookies.get("user") || "{}");
     console.log(token);
-    const url = `http://localhost:8080/api/product`;
+    const url = `/product`;
     const config = {
       headers: { Authorization: `${token}` },
     };
-    axios
+    api
       .get(url, config)
       .then((response) => {
         console.log(response);

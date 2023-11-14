@@ -1,8 +1,9 @@
 "use client";
-import axios from "axios";
+
 import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { AiOutlineReload } from "react-icons/ai";
+import api from "@/utils/api";
 
 const ConnectionTester = () => {
   const [systemUp, systemSetUp] = useState(false);
@@ -10,8 +11,8 @@ const ConnectionTester = () => {
 
   const reload = () => {
     setReloadClicked(true);
-    axios
-      .get("http://localhost:8080/api/health")
+    api
+      .get("/health")
       .then((res) => {
         console.log(res);
         if (res.data === true) return systemSetUp(true);
@@ -27,8 +28,8 @@ const ConnectionTester = () => {
   };
 
   useEffect(() => {
-    axios
-      .get("http://localhost:8080/api/health")
+    api
+      .get("/health")
       .then((res) => {
         console.log(res);
         if (res.data === true) return systemSetUp(true);

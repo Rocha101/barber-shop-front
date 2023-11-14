@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -21,11 +20,11 @@ import {
   AiOutlineEye,
   AiOutlineEyeInvisible,
 } from "react-icons/ai";
-import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useHookFormMask } from "use-mask-input";
 import Cookies from "js-cookie";
+import api from "@/utils/api";
 
 const formSchema = z.object({
   id: z.number(),
@@ -78,12 +77,8 @@ const EditUser = ({ params }: { params: { id: string } }) => {
       headers: { Authorization: `${token}` },
     };
     console.log(values);
-    axios
-      .put(
-        "http://localhost:8080/api/user/" + form.getValues("id"),
-        values,
-        config
-      )
+    api
+      .put("/user/" + form.getValues("id"), values, config)
       .then((res) => {
         console.log(res);
         toast({
@@ -105,8 +100,8 @@ const EditUser = ({ params }: { params: { id: string } }) => {
     const config = {
       headers: { Authorization: `${token}` },
     };
-    axios
-      .get("http://localhost:8080/api/user/" + params.id, config)
+    api
+      .get("/user/" + params.id, config)
       .then((res) => {
         form.reset(res.data);
       })

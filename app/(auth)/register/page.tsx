@@ -12,7 +12,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
-import axios from "axios";
 import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -30,6 +29,8 @@ import format from "date-fns/format";
 import { CalendarIcon, ClockIcon, TimerIcon } from "@radix-ui/react-icons";
 import { Calendar } from "@/components/ui/calendar";
 import { Slider } from "@/components/ui/slider";
+import api from "@/utils/api";
+import { useLoading } from "@/hooks/useLoading";
 
 const formSchema = z
   .object({
@@ -62,6 +63,7 @@ const formSchema = z
   });
 
 const Entrar = () => {
+  const { showLoading, hideLoading } = useLoading();
   const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -79,6 +81,7 @@ const Entrar = () => {
   const [visibleConfirmPass, setVisibleConfirmPass] = useState(false);
 
   function onSubmit(values: z.infer<typeof formSchema>) {
+    showLoading();
     console.log(values);
     const config = {
       headers: {
@@ -93,9 +96,10 @@ const Entrar = () => {
       start_time: values.start_time,
       end_time: values.end_time,
     };
-    axios
-      .post("http://localhost:8080/api/auth/register", data, config)
+    api
+      .post("/auth/register", data, config)
       .then((res) => {
+        hideLoading();
         toast({
           title: "Você foi cadastrado com sucesso!",
         });
@@ -103,6 +107,7 @@ const Entrar = () => {
         form.reset();
       })
       .catch((err) => {
+        hideLoading();
         console.log(err);
         toast({
           title: "Não foi possível cadastrar",

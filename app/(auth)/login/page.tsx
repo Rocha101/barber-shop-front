@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
-import axios from "axios";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -19,6 +18,7 @@ import { toast } from "@/components/ui/use-toast";
 import { useCallback, useEffect, useState } from "react";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import Cookies from "js-cookie";
+import api from "@/utils/api";
 
 const formSchema = z.object({
   email: z
@@ -55,8 +55,8 @@ const Entrar = () => {
           "Access-Control-Allow-Origin": "*",
         },
       };
-      axios
-        .post("http://localhost:8080/api/auth/login", values, config)
+      api
+        .post("/auth/login", values, config)
         .then((res) => {
           console.log(res);
           Cookies.set("user", JSON.stringify(res.data.user));

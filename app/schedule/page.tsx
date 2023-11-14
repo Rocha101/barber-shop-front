@@ -3,10 +3,9 @@
 import React, { useEffect, useState } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, UseFormReturn } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
 import Image from "next/image";
-import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import {
@@ -26,10 +25,8 @@ import {
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
-  TableHeader,
   TableRow,
 } from "@/components/ui/table";
 import {
@@ -45,7 +42,6 @@ import { ptBR } from "date-fns/locale";
 import Link from "next/link";
 import { BsWhatsapp } from "react-icons/bs";
 import { useHookFormMask } from "use-mask-input";
-import axios from "axios";
 import Cookies from "js-cookie";
 import { toast } from "@/components/ui/use-toast";
 import { Service } from "../admin/services/service";
@@ -53,6 +49,7 @@ import { UserT } from "@/app/admin/users/user";
 import { LocationT } from "../admin/locations/locations";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
+import api from "@/utils/api";
 
 dayjs.extend(customParseFormat);
 
@@ -152,7 +149,7 @@ const CustomerSchedulePage = () => {
   };
 
   const onSubmit = () => {
-    const url = `http://localhost:8080/api/schedule`;
+    const url = `/schedule`;
 
     const data = {
       ...form.getValues(),
@@ -170,7 +167,7 @@ const CustomerSchedulePage = () => {
         "Content-Type": "application/json",
       },
     };
-    axios
+    api
       .post(url, data, config)
       .then((res) => {
         console.log(res);
@@ -195,8 +192,8 @@ const CustomerSchedulePage = () => {
     const config = {
       headers: { Authorization: `${token}` },
     };
-    axios
-      .get("http://localhost:8080/api/user", config)
+    api
+      .get("/user", config)
       .then((res) => {
         console.log(res.data);
         setBarbers(res.data);
@@ -211,8 +208,8 @@ const CustomerSchedulePage = () => {
     const config = {
       headers: { Authorization: `${token}` },
     };
-    axios
-      .get("http://localhost:8080/api/location/barber/" + watchuserId, config)
+    api
+      .get("/location/barber/" + watchuserId, config)
       .then((res) => {
         console.log(res.data);
         setLocations(res.data);
@@ -227,8 +224,8 @@ const CustomerSchedulePage = () => {
     const config = {
       headers: { Authorization: `${token}` },
     };
-    axios
-      .get("http://localhost:8080/api/service/barber/" + watchuserId, config)
+    api
+      .get("/service/barber/" + watchuserId, config)
       .then((res) => {
         console.log(res.data);
         setServices(res.data);

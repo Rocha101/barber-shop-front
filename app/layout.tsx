@@ -1,11 +1,9 @@
+"use client";
 import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import { useEffect } from "react";
-import axios from "axios";
 import { Toaster } from "@/components/ui/toaster";
-import ConnectionTesterProvider from "@/components/providers/conn-tester-provider.";
-import ConnectionTester from "@/components/conn-tester";
+import { LoadingProvider } from "@/hooks/useLoading";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,7 +20,7 @@ export default function RootLayout({
   return (
     <html lang="pt-br">
       <body className={`${inter.className} relative`}>
-        {children}
+        <LoadingProvider>{children}</LoadingProvider>
         <Toaster />
         {/*   <ConnectionTester /> */}
       </body>

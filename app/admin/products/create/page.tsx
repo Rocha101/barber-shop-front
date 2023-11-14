@@ -16,9 +16,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
 import { AiOutlineArrowLeft } from "react-icons/ai";
-import axios from "axios";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
+import api from "@/utils/api";
 
 interface Product {
   description: string;
@@ -60,7 +60,6 @@ const EditUser = ({ params }: { params: { id: string } }) => {
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     const token = Cookies.get("token");
-    axios;
     const data = {
       description: values.description,
       price: parseFloat(Number(values.price).toFixed(2)),
@@ -69,11 +68,11 @@ const EditUser = ({ params }: { params: { id: string } }) => {
       userId: JSON.parse(Cookies.get("user") || "{}").id,
     };
     console.log(data);
-    const url = `http://localhost:8080/api/product`;
+    const url = `/product`;
     const config = {
       headers: { Authorization: `${token}` },
     };
-    axios
+    api
       .post(url, data, config)
       .then((res) => {
         console.log(res);

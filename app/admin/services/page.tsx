@@ -2,22 +2,13 @@
 import { Button } from "@/components/ui/button";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import axios from "axios";
 import { toast } from "@/components/ui/use-toast";
-import { BiCut, BiSolidTrashAlt } from "react-icons/bi";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import Cookies from "js-cookie";
 import Link from "next/link";
 import { DataTable } from "@/components/data-table";
 import { Service } from "./service";
 import { columns } from "./columns";
+import api from "@/utils/api";
 
 const Services = () => {
   const router = useRouter();
@@ -29,8 +20,8 @@ const Services = () => {
     const config = {
       headers: { Authorization: `${token}` },
     };
-    axios
-      .get("http://localhost:8080/api/service", config)
+    api
+      .get("/service", config)
       .then((res) => {
         console.log(res.data);
         setService(res.data);
@@ -44,8 +35,8 @@ const Services = () => {
   }, []);
 
   const removeLabor = (id: number) => {
-    axios
-      .delete(`http://localhost:8080/api/service/` + id)
+    api
+      .delete(`/service/` + id)
       .then((res) => {
         console.log(res);
         toast({

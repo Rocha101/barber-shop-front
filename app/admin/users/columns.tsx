@@ -4,10 +4,7 @@ import Link from "next/link";
 import { ColumnDef } from "@tanstack/react-table";
 
 import { Button } from "@/components/ui/button";
-import formatPhoneNumber from "@/lib/phoneMask";
-import { AiFillDelete, AiOutlineDelete } from "react-icons/ai";
-import { BiSolidTrashAlt, BiTrashAlt } from "react-icons/bi";
-import axios from "axios";
+import { BiSolidTrashAlt } from "react-icons/bi";
 import { toast } from "@/components/ui/use-toast";
 import {
   Dialog,
@@ -17,6 +14,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import api from "@/utils/api";
 
 export type Users = {
   id: string;
@@ -27,8 +25,8 @@ export type Users = {
 };
 
 const removeUser = (id: number) => {
-  axios
-    .delete(`http://localhost:8080/api/barbers/` + id)
+  api
+    .delete(`/barbers/` + id)
     .then((res) => {
       console.log(res);
       toast({

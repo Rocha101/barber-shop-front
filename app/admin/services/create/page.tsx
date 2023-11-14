@@ -10,12 +10,12 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
-import axios from "axios";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { useRouter } from "next/navigation";
 import { toast } from "@/components/ui/use-toast";
 import Cookies from "js-cookie";
+import api from "@/utils/api";
 
 const formSchema = z.object({
   description: z.string(),
@@ -47,8 +47,8 @@ const EditService = () => {
       userId: user.id,
     };
     console.log(data);
-    axios
-      .post("http://localhost:8080/api/service", data, config)
+    api
+      .post("/service", data, config)
       .then((res) => {
         console.log(res);
         router.push("/admin/services");

@@ -5,10 +5,10 @@ import GeneralReport from "./report";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import axios from "axios";
 import Cookies from "js-cookie";
 import { toast } from "@/components/ui/use-toast";
 import { ReportT } from "./report-type";
+import api from "@/utils/api";
 
 const ReportsPage = () => {
   const [data, setData] = useState<ReportT>();
@@ -26,11 +26,11 @@ const ReportsPage = () => {
     const token = Cookies.get("token");
     const user = JSON.parse(Cookies.get("user") || "{}");
     console.log(token);
-    const url = `http://localhost:8080/api/report?startDate=${initialDate}&endDate=${endDate}`;
+    const url = `/report?startDate=${initialDate}&endDate=${endDate}`;
     const config = {
       headers: { Authorization: `${token}` },
     };
-    axios
+    api
       .get(url, config)
       .then((response) => {
         console.log(response);

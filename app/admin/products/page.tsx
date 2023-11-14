@@ -3,9 +3,9 @@ import { DataTable } from "@/components/data-table";
 import { useEffect, useState } from "react";
 import { columns } from "./columns";
 import Cookies from "js-cookie";
-import axios from "axios";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import api from "@/utils/api";
 
 export default function Produtos() {
   const [data, setData] = useState([]);
@@ -14,11 +14,11 @@ export default function Produtos() {
     const token = Cookies.get("token");
     const user = JSON.parse(Cookies.get("user") || "{}");
     console.log(token);
-    const url = `http://localhost:8080/api/product`;
+    const url = `/product`;
     const config = {
       headers: { Authorization: `${token}` },
     };
-    axios
+    api
       .get(url, config)
       .then((response) => {
         console.log(response);
