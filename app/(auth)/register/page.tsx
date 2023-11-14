@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -15,22 +14,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
-import * as z from "zod";
-import { useHookFormMask } from "use-mask-input";
-import { useRouter } from "next/navigation";
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
-import format from "date-fns/format";
-import { CalendarIcon, ClockIcon, TimerIcon } from "@radix-ui/react-icons";
-import { Calendar } from "@/components/ui/calendar";
-import { Slider } from "@/components/ui/slider";
+  AiOutlineEye,
+  AiOutlineEyeInvisible,
+  AiOutlineLoading3Quarters,
+} from "react-icons/ai";
+import * as z from "zod";
+import { useRouter } from "next/navigation";
 import api from "@/utils/api";
-import { useLoading } from "@/hooks/useLoading";
 
 const formSchema = z
   .object({
@@ -63,7 +54,6 @@ const formSchema = z
   });
 
 const Entrar = () => {
-  const { showLoading, hideLoading } = useLoading();
   const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -79,9 +69,10 @@ const Entrar = () => {
 
   const [visiblePass, setVisiblePass] = useState(false);
   const [visibleConfirmPass, setVisibleConfirmPass] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    showLoading();
+    setLoading(true);
     console.log(values);
     const config = {
       headers: {
@@ -99,7 +90,7 @@ const Entrar = () => {
     api
       .post("/auth/register", data, config)
       .then((res) => {
-        hideLoading();
+        setLoading(false);
         toast({
           title: "Você foi cadastrado com sucesso!",
         });
@@ -107,13 +98,20 @@ const Entrar = () => {
         form.reset();
       })
       .catch((err) => {
-        hideLoading();
+        setLoading(false);
         console.log(err);
         toast({
           title: "Não foi possível cadastrar",
         });
       });
   }
+
+  if (loading)
+    return (
+      <div className="fixed left-0 top-0 z-50 flex h-full w-full items-center justify-center bg-background backdrop-blur-md">
+        <AiOutlineLoading3Quarters className="h-20 w-20 animate-spin text-primary" />
+      </div>
+    );
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center p-24 gap-10">
