@@ -1,6 +1,5 @@
 "use client";
 import React, { useState } from "react";
-import GeneralReport from "./report";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -8,6 +7,14 @@ import Cookies from "js-cookie";
 import { toast } from "@/components/ui/use-toast";
 import { ReportT } from "./report-type";
 import api from "@/utils/api";
+import {
+  Document,
+  Page,
+  Text,
+  View,
+  StyleSheet,
+  PDFViewer,
+} from "@react-pdf/renderer";
 
 const ReportsPage = () => {
   const [data, setData] = useState<ReportT>();
@@ -65,10 +72,57 @@ const ReportsPage = () => {
         <Button onClick={getReports}>Gerar Relatório</Button>
       </div>
       <div className="h-full w-full">
-        <GeneralReport data={data} />
+        <PDFViewer style={{ width: "100%", height: "100%" }}>
+          <GeneralReport data={data} />
+        </PDFViewer>
       </div>
     </div>
   );
 };
+
+const styles = StyleSheet.create({
+  page: {
+    flexDirection: "row",
+    backgroundColor: "#F5F5F5",
+    width: "100%",
+  },
+  section: {
+    margin: 20,
+    padding: 20,
+    flexGrow: 1,
+    border: "1px solid #CCCCCC",
+    borderRadius: 5,
+  },
+  topics: {
+    fontSize: 14,
+    marginVertical: 8,
+  },
+  title: {
+    fontSize: 28,
+    textAlign: "center",
+    marginBottom: 20,
+    color: "#333333",
+  },
+});
+
+// Create Document Component
+const GeneralReport = ({ data }: { data: ReportT | undefined }) => (
+  <Document>
+    <Page size="A4" style={styles.page}>
+      <View style={styles.section}>
+        <Text style={styles.title}>Relatório Barbearia - Vendas</Text>
+        <Text style={styles.topics}>
+          Total de vendas: {data?.totalSales || "Não informado"}
+        </Text>
+        <Text style={styles.topics}>
+          Faturamento total: {data?.totalMoney || "Não informado"}
+        </Text>
+        <Text style={styles.topics}>
+          Total de clientes: {data?.numberOfCustomers || "Não informado"}
+        </Text>
+      </View>
+    </Page>
+  </Document>
+);
 
 export default ReportsPage;
