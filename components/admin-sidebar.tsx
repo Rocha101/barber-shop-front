@@ -133,7 +133,9 @@ export function AdminSidebar() {
       <div className="w-full border-b" />
 
       <Button
-        className="flex w-full justify-between gap-2"
+        className={`flex w-full gap-2  ${
+          isOpen ? "justify-between" : "justify-center"
+        }`}
         variant="outline"
         onClick={() => setOpenCommand(!openCommand)}
       >
@@ -154,9 +156,11 @@ export function AdminSidebar() {
 
       {links.map((link) => {
         return (
-          <Link href={link.href} key={link.href}>
+          <Link href={link.href} key={link.href} passHref>
             <Button
-              className={`flex w-full justify-start gap-2 ${
+              className={`flex w-full items-center ${
+                isOpen ? "justify-start" : "justify-center"
+              } gap-2 ${
                 link.href === pathname
                   ? " dark:bg-white dark:hover:bg-white"
                   : ""
