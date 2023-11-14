@@ -72,9 +72,9 @@ const ReportsPage = () => {
         <Button onClick={getReports}>Gerar Relatório</Button>
       </div>
       <div className="h-full w-full">
-        <PDFViewer style={{ width: "100%", height: "100%" }}>
+        {/*   <PDFViewer style={{ width: "100%", height: "100%" }}>
           <GeneralReport data={data} />
-        </PDFViewer>
+        </PDFViewer> */}
       </div>
     </div>
   );
