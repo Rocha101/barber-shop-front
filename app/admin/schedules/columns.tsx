@@ -66,7 +66,7 @@ export const columns: ColumnDef<Event>[] = [
     },
   },
   {
-    accessorKey: "locationId",
+    accessorKey: "location",
     header: "Localização",
   },
   /*  {
