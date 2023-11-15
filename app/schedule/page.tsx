@@ -106,7 +106,7 @@ const CustomerSchedulePage = () => {
   const watchAll = form.watch();
 
   const selectedBarberName = barbers.find(
-    (barber: any) => barber.id === +watchAll.serviceId
+    (barber: any) => barber.id === +watchAll.userId
   )?.username;
 
   const selectedServiceName = services.find(
@@ -118,7 +118,7 @@ const CustomerSchedulePage = () => {
   )?.description;
 
   const selectedBarber = barbers.find(
-    (barber: any) => barber.id === +watchAll.serviceId
+    (barber: any) => barber.id === +watchAll.userId
   );
 
   const serviceDuration = services.find(
@@ -126,17 +126,31 @@ const CustomerSchedulePage = () => {
   )?.total_time;
 
   const handleNextStep = async () => {
-    const isStepValid = await form.trigger(["username", "email", "phone"]);
+    const isFirstStepValid = await form.trigger(["username", "email", "phone"]);
+    const isSecondStepValid = await form.trigger([
+      "locationId",
+      "serviceId",
+      "userId",
+    ]);
+    /*  const isThirdStepValid = await form.trigger(["date", "time"]); */
 
-    if (!isStepValid) {
+    if (!isFirstStepValid && step === 0) {
       toast({
         title: "Erro ao avançar",
         description: "Verifique todos os campos",
       });
+      return;
     }
-    if (isStepValid) {
-      setStep((prev) => prev + 1);
+
+    if (!isSecondStepValid && step === 1) {
+      toast({
+        title: "Erro ao avançar",
+        description: "Verifique todos os campos",
+      });
+      return;
     }
+
+    setStep((prev) => prev + 1);
   };
 
   const handlePreviousStep = () => {
@@ -150,24 +164,29 @@ const CustomerSchedulePage = () => {
   const onSubmit = () => {
     const url = `/schedule`;
 
+    const selectedBarberStartTime = selectedBarber?.start_time;
+
+    if (!selectedBarberStartTime) return;
+    if (!serviceDuration) return;
+
+    const [hours, minutes] = selectedBarberStartTime.split(":").map(Number);
+    const [serviceHours, serviceMinutes] = serviceDuration
+      .split(":")
+      .map(Number);
+
+    const startDateTime = new Date();
+    startDateTime.setHours(hours, minutes, 0);
+
+    const endDateTime = new Date();
+    endDateTime.setHours(hours + serviceHours, minutes + serviceMinutes, 0);
+
     const data = {
       ...form.getValues(),
-      start_time: dayjs(selectedBarber?.start_time, "HH:mm").toISOString(),
-      end_time: dayjs(selectedBarber?.start_time, "HH:mm")
-        .add(30, "m")
-        .toISOString(),
-    };
-    console.log("data", data);
-
-    console.log("start", selectedBarber?.start_time);
-    console.log("end", serviceDuration);
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-      },
+      start_time: startDateTime.toISOString(),
+      end_time: endDateTime.toISOString(),
     };
     api
-      .post(url, data, config)
+      .post(url, data)
       .then((res) => {
         console.log(res);
         toast({
@@ -448,7 +467,11 @@ const CustomerSchedulePage = () => {
                               variant={
                                 selectedTime === time ? "default" : "outline"
                               }
-                              onClick={() => handleSelectTime(time)}
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                handleSelectTime(time);
+                              }}
                             >
                               {time}
                             </Button>
@@ -501,7 +524,9 @@ const CustomerSchedulePage = () => {
             </div>
           </div>
           <div
-            className={`flex ${step > 0 ? "justify-between" : "justify-end"}`}
+            className={`flex mt-4 ${
+              step > 0 ? "justify-between" : "justify-end"
+            }`}
           >
             {step > 0 && (
               <Button variant="outline" onClick={handlePreviousStep}>

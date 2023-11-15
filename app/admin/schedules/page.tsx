@@ -72,6 +72,12 @@ const SchedulesPage = () => {
       });
   }, []);
 
+  const eventsOnSchedule = events.map((event) => {
+    return {
+      ...event.events,
+    };
+  });
+
   return (
     <div className="flex flex-col gap-2">
       <Tabs defaultValue="table">
@@ -86,7 +92,7 @@ const SchedulesPage = () => {
           </TabsTrigger>
         </TabsList>
         <TabsContent value="calendar">
-          <Calendar events={events} />
+          <Calendar events={eventsOnSchedule} />
         </TabsContent>
         <TabsContent value="table">
           <div className="flex justify-end items-center">
@@ -104,7 +110,7 @@ const SchedulesPage = () => {
               </SelectContent>
             </Select>
           </div>
-          <DataTable data={filteredEvents} columns={columns} />
+          <DataTable data={eventsOnSchedule} columns={columns} />
         </TabsContent>
       </Tabs>
     </div>

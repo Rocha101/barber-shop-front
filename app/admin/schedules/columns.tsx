@@ -4,14 +4,26 @@ import { ColumnDef } from "@tanstack/react-table";
 
 import { Schedule } from "./schedule";
 
-export const columns: ColumnDef<Schedule>[] = [
+type Event = {
+  id: number;
+  title: string;
+  description: string | null;
+  start_time: string;
+  end_time: string;
+  userId: number;
+  customerId: number;
+  serviceId: number;
+  scheduleId: number;
+};
+
+export const columns: ColumnDef<Event>[] = [
   {
     accessorKey: "title",
     header: "Titulo",
     cell: ({ row }) => {
       return (
         <div className="flex flex-col gap-1">
-          <span className="text-sm">{row.original.events.title}</span>
+          <span className="text-sm">{row.original.title}</span>
         </div>
       );
     },
@@ -24,16 +36,11 @@ export const columns: ColumnDef<Schedule>[] = [
     accessorKey: "date",
     header: "Data",
     cell: ({ row }) => {
-      const date = new Date(row.original.events.start_time);
-      const hourMinute = new Intl.DateTimeFormat("en-US", {
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: false,
-      }).format(date);
-
       return (
         <div className="flex flex-col gap-1">
-          <span className="text-sm">{hourMinute}</span>
+          <span className="text-sm">
+            {new Date(row.original.end_time).toLocaleDateString("pt-BR")}
+          </span>
         </div>
       );
     },
@@ -42,23 +49,17 @@ export const columns: ColumnDef<Schedule>[] = [
     accessorKey: "",
     header: "Horário",
     cell: ({ row }) => {
-      const start_date = new Date(row.original.events.start_time);
-      const start_hourMinute = new Intl.DateTimeFormat("en-US", {
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: false,
-      }).format(start_date);
+      const start_time = new Date(row.original.start_time)
+        .toLocaleString()
+        .split(" ")[1];
+      const end_time = new Date(row.original.end_time)
+        .toLocaleString()
+        .split(" ")[1];
 
-      const end_date = new Date(row.original.events.start_time);
-      const end_hourMinute = new Intl.DateTimeFormat("en-US", {
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: false,
-      }).format(end_date);
       return (
         <div className="flex flex-col gap-1">
           <span className="">
-            {start_hourMinute} - {end_hourMinute}
+            {start_time} - {end_time}
           </span>
         </div>
       );

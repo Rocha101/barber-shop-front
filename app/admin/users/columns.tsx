@@ -26,7 +26,7 @@ export type Users = {
 
 const removeUser = (id: number) => {
   api
-    .delete(`/barbers/` + id)
+    .delete(`/user/` + id)
     .then((res) => {
       console.log(res);
       toast({
