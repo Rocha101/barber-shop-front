@@ -92,13 +92,64 @@ const CustomerSchedulePage = () => {
 
   const registerWithMask = useHookFormMask(form.register);
   const [step, setStep] = useState(0);
-  const [date, setDate] = useState<Date | undefined>(new Date());
+  const [date, setDate] = useState<any>(new Date());
   const [selectedTime, setSelectedTime] = useState<string>();
   const [services, setServices] = useState<Service[]>([]);
   const [locations, setLocations] = useState<LocationT[]>([]);
   const [barbers, setBarbers] = useState<UserT[]>([]);
 
-  const freeTimes = ["08:00", "08:30", "09:00", "09:30", "10:00", "10:30"];
+  // const freeTimes = ["08:00", "08:30", "09:00", "09:30", "10:00", "10:30"];
+
+  const freeTimes = () => {
+    const selectedBarberStartTime = selectedBarber?.start_time;
+    const selectedBarberEndTime = selectedBarber?.end_time;
+
+    if (!selectedBarberStartTime) return [];
+    if (!selectedBarberEndTime) return [];
+    if (!serviceDuration) return [];
+
+    const [hours, minutes] = selectedBarberStartTime.split(":").map(Number);
+    const [hoursEnd, minutesEnd] = selectedBarberEndTime.split(":").map(Number);
+
+    const availableTimes = [];
+
+    let nextHour = hours;
+    let nextMinute = minutes;
+
+    if (minutes === 0) {
+      availableTimes.push(`${hours}:${minutes}0`);
+    }
+
+    const serviceDurationArray = serviceDuration.split(":").map(Number);
+
+    const serviceHours = serviceDurationArray[0];
+
+    const serviceMinutes = serviceDurationArray[1];
+
+    let newHour = hours;
+
+    let newMinute = minutes;
+
+    // eslint-disable-next-line no-constant-condition
+    while (true) {
+      newHour = newHour + serviceHours;
+
+      newMinute = newMinute + serviceMinutes;
+
+      if (newMinute >= 60) {
+        newMinute = 0;
+        newHour = newHour + 1;
+      }
+      if (newHour >= hoursEnd) {
+        break;
+      }
+      availableTimes.push(
+        `${newHour}:${newMinute.toString().padStart(2, "0")}`
+      );
+    }
+
+    return availableTimes;
+  };
 
   const ProgressPercentage = step * 33.33;
 
@@ -164,20 +215,20 @@ const CustomerSchedulePage = () => {
   const onSubmit = () => {
     const url = `/schedule`;
 
-    const selectedBarberStartTime = selectedBarber?.start_time;
+    const selectedStartTime = selectedTime;
 
-    if (!selectedBarberStartTime) return;
+    if (!selectedStartTime) return;
     if (!serviceDuration) return;
 
-    const [hours, minutes] = selectedBarberStartTime.split(":").map(Number);
+    const [hours, minutes] = selectedStartTime.split(":").map(Number);
     const [serviceHours, serviceMinutes] = serviceDuration
       .split(":")
       .map(Number);
 
-    const startDateTime = new Date();
+    const startDateTime = new Date(date);
     startDateTime.setHours(hours, minutes, 0);
 
-    const endDateTime = new Date();
+    const endDateTime = new Date(date);
     endDateTime.setHours(hours + serviceHours, minutes + serviceMinutes, 0);
 
     const data = {
@@ -185,6 +236,7 @@ const CustomerSchedulePage = () => {
       start_time: startDateTime.toISOString(),
       end_time: endDateTime.toISOString(),
     };
+    console.log(data);
     api
       .post(url, data)
       .then((res) => {
@@ -246,15 +298,17 @@ const CustomerSchedulePage = () => {
       <div className="flex items-center justify-between gap-3 w-full h-16 border px-3 bg-white">
         <div className="flex gap-3 items-center">
           <Image src="/logo.png" width={50} height={50} alt="logo" />
-          <h2 className="text-lg font-bold">Barber Shop Manager</h2>
+          <h2 className="text-lg font-bold hidden md:block">
+            Barber Shop Manager
+          </h2>
         </div>
         <Link href={"/"} passHref>
           <Button variant="link">Sou Barbeiro</Button>
         </Link>
       </div>
 
-      <div className="h-full flex flex-col items-center justify-center">
-        <div className="p-4 border rounded min-w-[500px] min-h-[400px] flex flex-col justify-between">
+      <div className="w-full h-full flex flex-col items-center justify-center px-2 md:px-0">
+        <div className="p-4 border rounded w-full md:min-w-[500px] md:max-w-[300px] md:min-h-[400px] flex flex-col justify-between">
           <div className="flex flex-col gap-3">
             <TooltipProvider>
               <Tooltip>
@@ -460,7 +514,7 @@ const CustomerSchedulePage = () => {
                           locale={ptBR}
                         />
                         <div className="h-full grid grid-cols-3 gap-3 p-4 items-start">
-                          {freeTimes.map((time) => (
+                          {freeTimes().map((time) => (
                             <Button
                               key={time}
                               className="text-xs"

@@ -15,6 +15,9 @@ export default function Home() {
         <Link href="/login" passHref>
           <Button size="lg">Entrar</Button>
         </Link>
+        <Link href="/schedule" passHref>
+          <Button size="lg">Agendar Horário</Button>
+        </Link>
       </div>
     </main>
   );

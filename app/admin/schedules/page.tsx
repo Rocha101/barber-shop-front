@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 
 import Calendar from "@/components/calendar";
-import { startOfMonth } from "date-fns";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DataTable } from "@/components/data-table";
 import {
@@ -20,11 +19,7 @@ import { Schedule } from "./schedule";
 import api from "@/utils/api";
 
 const SchedulesPage = () => {
-  const [currentMonth, setCurrentMonth] = useState<Date>(
-    startOfMonth(new Date())
-  );
-
-  const [filterValue, setFilterValue] = useState<string>("all");
+  const [filterValue, setFilterValue] = useState<string>("today");
 
   const [events, setEvents] = useState<Schedule[]>([]);
 
