@@ -22,4 +22,8 @@ export type Schedule = {
     userId: number;
     total_time: string;
   }[];
+  location: {
+    id: number;
+    description: string;
+  };
 };

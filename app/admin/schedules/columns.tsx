@@ -4,33 +4,30 @@ import { ColumnDef } from "@tanstack/react-table";
 
 import { Schedule } from "./schedule";
 
-type Event = {
-  id: number;
-  title: string;
-  description: string | null;
-  start_time: string;
-  end_time: string;
-  userId: number;
-  customerId: number;
-  serviceId: number;
-  scheduleId: number;
-};
-
-export const columns: ColumnDef<Event>[] = [
+export const columns: ColumnDef<Schedule>[] = [
   {
     accessorKey: "title",
-    header: "Titulo",
+    header: "Cliente",
     cell: ({ row }) => {
       return (
         <div className="flex flex-col gap-1">
-          <span className="text-sm">{row.original.title}</span>
+          <span className="text-sm">{row.original.events.title}</span>
         </div>
       );
     },
   },
   {
-    accessorKey: "description",
-    header: "Descrição",
+    accessorKey: "",
+    header: "Serviço",
+    cell: ({ row }) => {
+      return (
+        <div className="flex flex-col gap-1">
+          <span className="text-sm">
+            {row.original.services[0].description}
+          </span>
+        </div>
+      );
+    },
   },
   {
     accessorKey: "date",
@@ -39,7 +36,7 @@ export const columns: ColumnDef<Event>[] = [
       return (
         <div className="flex flex-col gap-1">
           <span className="text-sm">
-            {new Date(row.original.end_time).toLocaleDateString("pt-BR")}
+            {new Date(row.original.events.end_time).toLocaleDateString("pt-BR")}
           </span>
         </div>
       );
@@ -49,10 +46,10 @@ export const columns: ColumnDef<Event>[] = [
     accessorKey: "",
     header: "Horário",
     cell: ({ row }) => {
-      const start_time = new Date(row.original.start_time)
+      const start_time = new Date(row.original.events.start_time)
         .toLocaleString()
         .split(" ")[1];
-      const end_time = new Date(row.original.end_time)
+      const end_time = new Date(row.original.events.end_time)
         .toLocaleString()
         .split(" ")[1];
 
@@ -68,6 +65,13 @@ export const columns: ColumnDef<Event>[] = [
   {
     accessorKey: "location",
     header: "Localização",
+    cell: ({ row }) => {
+      return (
+        <div className="flex flex-col gap-1">
+          <span className="text-sm">{row.original.location.description}</span>
+        </div>
+      );
+    },
   },
   /*  {
     accessorKey: "actions",

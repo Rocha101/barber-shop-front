@@ -16,7 +16,6 @@ import {
 } from "@/components/ui/select";
 import { columns } from "./columns";
 import { BiCalendar, BiTable } from "react-icons/bi";
-import Cookies from "js-cookie";
 import { Schedule } from "./schedule";
 import api from "@/utils/api";
 
@@ -72,12 +71,6 @@ const SchedulesPage = () => {
       });
   }, []);
 
-  const eventsOnSchedule = events.map((event) => {
-    return {
-      ...event.events,
-    };
-  });
-
   return (
     <div className="flex flex-col gap-2">
       <Tabs defaultValue="table">
@@ -92,7 +85,7 @@ const SchedulesPage = () => {
           </TabsTrigger>
         </TabsList>
         <TabsContent value="calendar">
-          <Calendar events={eventsOnSchedule} />
+          <Calendar events={filteredEvents} />
         </TabsContent>
         <TabsContent value="table">
           <div className="flex justify-end items-center">
@@ -110,7 +103,7 @@ const SchedulesPage = () => {
               </SelectContent>
             </Select>
           </div>
-          <DataTable data={eventsOnSchedule} columns={columns} />
+          <DataTable data={filteredEvents} columns={columns} />
         </TabsContent>
       </Tabs>
     </div>

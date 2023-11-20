@@ -46,36 +46,27 @@ const Entrar = () => {
 
   const [visiblePass, setVisiblePass] = useState(false);
 
-  const onSubmit = useCallback(
-    (values: z.infer<typeof formSchema>) => {
-      console.log(values);
-      const config = {
-        headers: {
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
-        },
-      };
-      api
-        .post("/auth/login", values, config)
-        .then((res) => {
-          console.log(res);
-          Cookies.set("user", JSON.stringify(res.data.user));
-          Cookies.set("token", res.data.token);
-          toast({
-            title: "Login realizado com sucesso!",
-            description: "Redirecionando...",
-          });
-          router.push("/admin/dashboard");
-        })
-        .catch((err) => {
-          console.log(err);
-          toast({
-            title: "Não foi possível realizar o login",
-          });
+  const onSubmit = (values: z.infer<typeof formSchema>) => {
+    console.log(values);
+    api
+      .post("/auth/login", values)
+      .then((res) => {
+        console.log(res);
+        Cookies.set("user", JSON.stringify(res.data.user));
+        Cookies.set("token", res.data.token);
+        toast({
+          title: "Login realizado com sucesso!",
+          description: "Redirecionando...",
         });
-    },
-    [router]
-  );
+        router.push("/admin/dashboard");
+      })
+      .catch((err) => {
+        console.log(err);
+        toast({
+          title: "Não foi possível realizar o login",
+        });
+      });
+  };
 
   useEffect(() => {
     const handleKeyPress = (event: {
@@ -84,7 +75,24 @@ const Entrar = () => {
     }) => {
       if (event.key === "Enter") {
         event.preventDefault();
-        onSubmit(form.getValues());
+        api
+          .post("/auth/login", form.getValues())
+          .then((res) => {
+            console.log(res);
+            Cookies.set("user", JSON.stringify(res.data.user));
+            Cookies.set("token", res.data.token);
+            toast({
+              title: "Login realizado com sucesso!",
+              description: "Redirecionando...",
+            });
+            router.push("/admin/dashboard");
+          })
+          .catch((err) => {
+            console.log(err);
+            toast({
+              title: "Não foi possível realizar o login",
+            });
+          });
       }
     };
 
@@ -94,7 +102,7 @@ const Entrar = () => {
       // Clean up the event listener when the component unmounts
       window.removeEventListener("keydown", handleKeyPress);
     };
-  }, [onSubmit, form]);
+  }, [form, router]);
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center p-24 gap-10">
