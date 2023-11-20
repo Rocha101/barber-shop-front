@@ -113,8 +113,6 @@ export function AdminSidebar() {
 
   const currentUser = JSON.parse(Cookies.get("user") || "{}");
 
-  console.log(currentUser);
-
   return (
     <aside
       className={`z-50 flex-col gap-3 border-r p-3 flex ${
@@ -199,28 +197,32 @@ export function AdminSidebar() {
           </CommandGroup>
         </CommandList>
       </CommandDialog>
-      <div
-        className={
-          isOpen
-            ? "w-full flex mt-auto items-center justify-between rounded-md border px-3 py-2"
-            : "mt-auto flex items-center justify-center mb-2"
-        }
-      >
-        <Avatar>
-          <AvatarFallback className="uppercase select-none">
-            {currentUser.username.substring(0, 1)}
-          </AvatarFallback>
-        </Avatar>
-        <div className={`flex flex-col gap-1 ${!isOpen ? "hidden" : "block"}`}>
-          <span className="text-sm uppercase font-bold">
-            {currentUser.username}
-          </span>
-          <span className="w-full flex text-xs justify-end">
-            {currentUser.start_time ? currentUser.start_time : "Sem horário"} -{" "}
-            {currentUser.end_time ? currentUser.end_time : "Sem horário"}
-          </span>
+      {currentUser && (
+        <div
+          className={
+            isOpen
+              ? "w-full flex mt-auto items-center justify-between rounded-md border px-3 py-2"
+              : "mt-auto flex items-center justify-center mb-2"
+          }
+        >
+          <Avatar>
+            <AvatarFallback className="uppercase select-none">
+              {currentUser?.username?.substring(0, 1)}
+            </AvatarFallback>
+          </Avatar>
+          <div
+            className={`flex flex-col gap-1 ${!isOpen ? "hidden" : "block"}`}
+          >
+            <span className="text-sm uppercase font-bold">
+              {currentUser?.username}
+            </span>
+            <span className="w-full flex text-xs justify-end">
+              {currentUser.start_time ? currentUser.start_time : "Sem horário"}{" "}
+              - {currentUser.end_time ? currentUser.end_time : "Sem horário"}
+            </span>
+          </div>
         </div>
-      </div>
+      )}
     </aside>
   );
 }
