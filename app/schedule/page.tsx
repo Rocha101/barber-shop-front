@@ -101,51 +101,58 @@ const CustomerSchedulePage = () => {
   // const freeTimes = ["08:00", "08:30", "09:00", "09:30", "10:00", "10:30"];
 
   const freeTimes = () => {
+    const selectedBarberEvents = selectedBarber?.events || [];
     const selectedBarberStartTime = selectedBarber?.start_time;
     const selectedBarberEndTime = selectedBarber?.end_time;
 
-    if (!selectedBarberStartTime) return [];
-    if (!selectedBarberEndTime) return [];
-    if (!serviceDuration) return [];
+    if (
+      !selectedBarberStartTime ||
+      !selectedBarberEndTime ||
+      !serviceDuration
+    ) {
+      return [];
+    }
 
-    const [hours, minutes] = selectedBarberStartTime.split(":").map(Number);
-    const [hoursEnd, minutesEnd] = selectedBarberEndTime.split(":").map(Number);
+    const [startHour, startMinute] = selectedBarberStartTime
+      .split(":")
+      .map(Number);
+    const [endHour, endMinute] = selectedBarberEndTime.split(":").map(Number);
+
+    const occupiedTimes = new Set();
+
+    selectedBarberEvents.forEach((event) => {
+      const [eventStartHour, eventStartMinute] = event.start_time
+        .split(":")
+        .map(Number);
+      const [eventEndHour, eventEndMinute] = event.end_time
+        .split(":")
+        .map(Number);
+
+      for (let h = eventStartHour; h < eventEndHour; h++) {
+        for (let m = 0; m < 60; m++) {
+          if (
+            (h === eventStartHour && m >= eventStartMinute) ||
+            (h === eventEndHour && m <= eventEndMinute)
+          ) {
+            occupiedTimes.add(`${h}:${m.toString().padStart(2, "0")}`);
+          }
+        }
+      }
+    });
 
     const availableTimes = [];
 
-    let nextHour = hours;
-    let nextMinute = minutes;
-
-    if (minutes === 0) {
-      availableTimes.push(`${hours}:${minutes}0`);
-    }
-
-    const serviceDurationArray = serviceDuration.split(":").map(Number);
-
-    const serviceHours = serviceDurationArray[0];
-
-    const serviceMinutes = serviceDurationArray[1];
-
-    let newHour = hours;
-
-    let newMinute = minutes;
-
-    // eslint-disable-next-line no-constant-condition
-    while (true) {
-      newHour = newHour + serviceHours;
-
-      newMinute = newMinute + serviceMinutes;
-
-      if (newMinute >= 60) {
-        newMinute = 0;
-        newHour = newHour + 1;
+    for (let hour = startHour; hour < endHour; hour++) {
+      for (
+        let minute = 0;
+        minute < 60;
+        minute += Number(serviceDuration.split(":")[1])
+      ) {
+        const time = `${hour}:${minute.toString().padStart(2, "0")}`;
+        if (!occupiedTimes.has(time)) {
+          availableTimes.push(time);
+        }
       }
-      if (newHour >= hoursEnd) {
-        break;
-      }
-      availableTimes.push(
-        `${newHour}:${newMinute.toString().padStart(2, "0")}`
-      );
     }
 
     return availableTimes;
@@ -184,6 +191,7 @@ const CustomerSchedulePage = () => {
       "userId",
     ]);
     /*  const isThirdStepValid = await form.trigger(["date", "time"]); */
+    const isThirdStepValid = selectedTime !== undefined && date !== undefined;
 
     if (!isFirstStepValid && step === 0) {
       toast({
@@ -194,6 +202,14 @@ const CustomerSchedulePage = () => {
     }
 
     if (!isSecondStepValid && step === 1) {
+      toast({
+        title: "Erro ao avançar",
+        description: "Verifique todos os campos",
+      });
+      return;
+    }
+
+    if (!isThirdStepValid && step === 2) {
       toast({
         title: "Erro ao avançar",
         description: "Verifique todos os campos",
@@ -259,7 +275,7 @@ const CustomerSchedulePage = () => {
 
   useEffect(() => {
     api
-      .get("/user")
+      .get("/user/list")
       .then((res) => {
         console.log(res.data);
         setBarbers(res.data);
@@ -271,7 +287,7 @@ const CustomerSchedulePage = () => {
 
   useEffect(() => {
     api
-      .get("/location/barber/" + watchuserId)
+      .get("/location/list/barber/" + watchuserId)
       .then((res) => {
         console.log(res.data);
         setLocations(res.data);
@@ -283,7 +299,7 @@ const CustomerSchedulePage = () => {
 
   useEffect(() => {
     api
-      .get("/service/barber/" + watchuserId)
+      .get("/service/list/barber/" + watchuserId)
       .then((res) => {
         console.log(res.data);
         setServices(res.data);
