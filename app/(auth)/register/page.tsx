@@ -74,21 +74,12 @@ const Entrar = () => {
   function onSubmit(values: z.infer<typeof formSchema>) {
     setLoading(true);
     console.log(values);
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-      },
-    };
     const data = {
+      ...values,
       username: values.name,
-      email: values.email,
-      password: values.password,
-      start_time: values.start_time,
-      end_time: values.end_time,
     };
     api
-      .post("/auth/register", data, config)
+      .post("/auth/register", data)
       .then((res) => {
         setLoading(false);
         toast({

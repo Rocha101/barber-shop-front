@@ -18,7 +18,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <>
-      <div className="relative flex min-h-screen flex-col h-full">
+      <div className="w-full relative flex min-h-screen flex-col h-full">
         <TopNav />
         <div className="h-full flex flex-1">
           <AdminSidebar />

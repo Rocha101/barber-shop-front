@@ -26,6 +26,8 @@ import {
 } from "react-icons/ai";
 import { BiSolidReport } from "react-icons/bi";
 import { BsFillCalendar2CheckFill } from "react-icons/bs";
+import { Avatar, AvatarFallback } from "./ui/avatar";
+import Cookies from "js-cookie";
 
 const links = [
   {
@@ -75,7 +77,7 @@ const TopNav = () => {
   };
 
   return (
-    <div className="flex items-center justify-between gap-3 w-full h-16 border px-3">
+    <div className="flex items-center justify-between gap-3 w-full h-16 border-b px-3">
       <div className="flex items-center gap-3">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -114,6 +116,7 @@ const TopNav = () => {
         <Image src="/logo.png" width={50} height={50} alt="logo" />
         <h2 className="text-lg font-bold">Barber Shop Manager</h2>
       </div>
+
       <Dialog>
         <DialogTrigger asChild>
           <Button variant="link">Sair</Button>

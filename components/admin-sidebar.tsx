@@ -15,7 +15,6 @@ import {
   CommandList,
 } from "./ui/command";
 import { Toggle } from "./ui/toggle";
-import { useToast } from "./ui/use-toast";
 import {
   AiOutlineSearch,
   AiFillHome,
@@ -88,7 +87,6 @@ const links = [
 export function AdminSidebar() {
   const router = useRouter();
   const pathname = usePathname();
-  const { toast } = useToast();
   const [isOpen, setIsOpen] = useState<boolean>(true);
 
   const [openCommand, setOpenCommand] = useState(false);
@@ -111,11 +109,9 @@ export function AdminSidebar() {
     };
   }, []);
 
-  const currentUser = JSON.parse(Cookies.get("user") || "{}");
-
   return (
     <aside
-      className={`z-50 flex-col gap-3 border-r p-3 flex ${
+      className={`z-50 hidden flex-col gap-3 border-r p-3 md:flex ${
         isOpen ? " w-64" : "w-20"
       }`}
     >
@@ -197,32 +193,6 @@ export function AdminSidebar() {
           </CommandGroup>
         </CommandList>
       </CommandDialog>
-      {currentUser && (
-        <div
-          className={
-            isOpen
-              ? "w-full flex mt-auto items-center justify-between rounded-md border px-3 py-2"
-              : "mt-auto flex items-center justify-center mb-2"
-          }
-        >
-          <Avatar>
-            <AvatarFallback className="uppercase select-none">
-              {currentUser?.username?.substring(0, 1)}
-            </AvatarFallback>
-          </Avatar>
-          <div
-            className={`flex flex-col gap-1 ${!isOpen ? "hidden" : "block"}`}
-          >
-            <span className="text-sm uppercase font-bold">
-              {currentUser?.username}
-            </span>
-            <span className="w-full flex text-xs justify-end">
-              {currentUser.start_time ? currentUser.start_time : "Sem horário"}{" "}
-              - {currentUser.end_time ? currentUser.end_time : "Sem horário"}
-            </span>
-          </div>
-        </div>
-      )}
     </aside>
   );
 }
