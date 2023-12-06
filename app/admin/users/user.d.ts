@@ -4,14 +4,14 @@ export type UserT = {
   email: string;
   password: string;
   phone: string;
-  start_time: string;
-  end_time: string;
+  startTime: string;
+  endTime: string;
   events: {
     id: number;
     title: string;
     description: string | null;
-    start_time: string;
-    end_time: string;
+    startTime: string;
+    endTime: string;
     userId: number;
     customerId: number;
     serviceId: number;
@@ -22,7 +22,7 @@ export type UserT = {
     description: string;
     price: number;
     userId: number;
-    total_time: string;
+    totalTime: string;
   }[];
   locations: {
     id: number;
