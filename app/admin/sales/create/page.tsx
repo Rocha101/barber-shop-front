@@ -39,13 +39,14 @@ interface Product {
 }
 
 interface Sale {
-  customerInfo: {
+  buyerInfos: {
     name: string;
     document?: string;
     phone?: string;
-  };
+  }[];
   products: any[];
   userId: string;
+  totalPrice?: number;
 }
 
 const formSchema = z.object({
@@ -96,11 +97,14 @@ const CreateSale = ({ params }: { params: { id: string } }) => {
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     const data: Sale = {
-      customerInfo: {
-        name: values.name,
-        document: values.document,
-        phone: values.phone,
-      },
+      buyerInfos: [
+        {
+          name: values.name,
+          document: values.document,
+          phone: values.phone,
+        },
+      ],
+      totalPrice: totalPriceSum(selectedProducts || []),
       products: selectedProducts || [],
       userId: JSON.parse(Cookies.get("user") || "{}").id,
     };
@@ -111,13 +115,13 @@ const CreateSale = ({ params }: { params: { id: string } }) => {
       });
       return;
     }
-    if (!data.customerInfo.name) {
+    if (!data.buyerInfos[0].name) {
       toast({
         title: "Informe o nome do cliente",
       });
       return;
     }
-    const url = `/sale`;
+    const url = `/sales`;
     api
       .post(url, data)
       .then((res) => {
@@ -154,11 +158,11 @@ const CreateSale = ({ params }: { params: { id: string } }) => {
   };
 
   useEffect(() => {
-    const url = `/product`;
+    const url = `/products`;
     api
       .get(url)
       .then((response) => {
-        console.log(response);
+        console.log("response", response);
         setProducts(response.data);
       })
       .catch((error) => {

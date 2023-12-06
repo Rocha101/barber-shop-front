@@ -18,14 +18,23 @@ import {
 
 interface DataTablePaginationProps<TData> {
   table: Table<TData>;
+  pagination?: {
+    page: number;
+    size: number;
+  };
+  setPagination?: React.Dispatch<
+    React.SetStateAction<{
+      page: number;
+      size: number;
+    }>
+  >;
 }
 
 export function DataTablePagination<TData>({
   table,
+  pagination,
+  setPagination,
 }: DataTablePaginationProps<TData>) {
-  const [page, setPage] = useState(1);
-  const [page_size, setPage_size] = useState(10);
-
   return (
     <div className="flex items-center justify-between overflow-auto px-2">
       <div className="flex-1 text-sm text-muted-foreground">
@@ -39,7 +48,8 @@ export function DataTablePagination<TData>({
             value={`${table.getState().pagination.pageSize}`}
             onValueChange={(value: any) => {
               table.setPageSize(Number(value));
-              setPage_size(Number(value));
+              setPagination &&
+                setPagination((prev) => ({ ...prev, size: Number(value) }));
             }}
           >
             <SelectTrigger className="h-8 w-[70px]">
@@ -64,7 +74,7 @@ export function DataTablePagination<TData>({
             className="hidden h-8 w-8 p-0 lg:flex"
             onClick={() => {
               table.setPageIndex(0);
-              setPage(1);
+              setPagination && setPagination((prev) => ({ ...prev, page: 0 }));
             }}
             disabled={!table.getCanPreviousPage()}
           >
@@ -76,7 +86,12 @@ export function DataTablePagination<TData>({
             className="h-8 w-8 p-0"
             onClick={() => {
               table.previousPage();
-              setPage(page - 1);
+              setPagination &&
+                pagination &&
+                setPagination((prev) => ({
+                  ...prev,
+                  page: pagination?.page - 1,
+                }));
             }}
             disabled={!table.getCanPreviousPage()}
           >
@@ -88,7 +103,12 @@ export function DataTablePagination<TData>({
             className="h-8 w-8 p-0"
             onClick={() => {
               table.nextPage();
-              setPage(page + 1);
+              setPagination &&
+                pagination &&
+                setPagination((prev) => ({
+                  ...prev,
+                  page: pagination?.page + 1,
+                }));
             }}
             disabled={!table.getCanNextPage()}
           >
@@ -100,7 +120,11 @@ export function DataTablePagination<TData>({
             className="hidden h-8 w-8 p-0 lg:flex"
             onClick={() => {
               table.setPageIndex(table.getPageCount() - 1);
-              setPage(table.getPageCount()); //quantidade de páginas
+              setPagination &&
+                setPagination((prev) => ({
+                  ...prev,
+                  page: table.getPageCount(),
+                }));
             }}
             disabled={!table.getCanNextPage()}
           >

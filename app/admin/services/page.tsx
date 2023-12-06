@@ -13,13 +13,17 @@ const Services = () => {
   const router = useRouter();
 
   const [service, setService] = useState<Service[]>([]);
+  const [pagination, setPagination] = useState({
+    page: 0,
+    size: 10,
+  });
 
   useEffect(() => {
     api
-      .get("/service")
+      .get(`/services?page=${pagination.page}&size=${pagination.size}`)
       .then((res) => {
         console.log(res.data);
-        setService(res.data);
+        setService(res.data.content);
       })
       .catch((err) => {
         console.log(err);
@@ -27,11 +31,11 @@ const Services = () => {
           title: "Não foi possível buscar os serviços",
         });
       });
-  }, []);
+  }, [pagination.page, pagination.size]);
 
   const removeLabor = (id: number) => {
     api
-      .delete(`/service/` + id)
+      .delete(`/services/` + id)
       .then((res) => {
         console.log(res);
         toast({
@@ -55,7 +59,12 @@ const Services = () => {
           <Button>Novo serviço</Button>
         </Link>
       </div>
-      <DataTable data={service} columns={columns} />
+      <DataTable
+        data={service}
+        columns={columns}
+        pagination={pagination}
+        setPagination={setPagination}
+      />
     </div>
   );
 };

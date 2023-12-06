@@ -4,7 +4,11 @@ import Cookies from "js-cookie";
 /* "https://api-barber-shop-7qds.onrender.com/api" */
 
 const api: AxiosInstance = axios.create({
-  baseURL: process.env.apiKey,
+  baseURL: process.env.localKey,
+  headers: {
+    "Content-Type": "application/json",
+    Accept: "*/*",
+  },
 });
 
 api.interceptors.request.use(

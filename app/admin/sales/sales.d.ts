@@ -19,10 +19,10 @@ export interface Order {
   id: number;
   customerInfoId: number;
   userId: number;
-  total_price: number;
-  created_at: string;
-  updated_at: string;
-  customerInfo: CustomerInfo;
+  totalPrice: number;
+  createdAt: string;
+  updatedAt: string;
+  buyerInfos: CustomerInfo[];
   products: any[];
   user: User;
 }

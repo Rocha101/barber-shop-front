@@ -26,7 +26,7 @@ export type Users = {
 
 const removeUser = (id: number) => {
   api
-    .delete(`/user/` + id)
+    .delete(`/users/` + id)
     .then((res) => {
       console.log(res);
       toast({
@@ -61,11 +61,11 @@ export const columns: ColumnDef<Users>[] = [
     header: "Telefone",
   },
   {
-    accessorKey: "start_time",
+    accessorKey: "startTime",
     header: "Horário inicial",
   },
   {
-    accessorKey: "end_time",
+    accessorKey: "endTime",
     header: "Horário final",
   },
   {

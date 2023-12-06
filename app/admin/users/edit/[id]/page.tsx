@@ -72,8 +72,17 @@ const EditUser = ({ params }: { params: { id: string } }) => {
   const [visiblePass, setVisiblePass] = useState(false);
 
   function onSubmit(values: z.infer<typeof formSchema>) {
+    const formData = {
+      email: values.email,
+      password: values.password,
+      startTime: values.start_time,
+      endTime: values.end_time,
+      username: values.username,
+      phone: values.phone,
+    };
+
     api
-      .put("/user/" + form.getValues("id"), values)
+      .put("/users/" + form.getValues("id"), formData)
       .then((res) => {
         console.log(res);
         toast({
@@ -92,9 +101,12 @@ const EditUser = ({ params }: { params: { id: string } }) => {
 
   useEffect(() => {
     api
-      .get("/user/" + params.id)
+      .get("/users/" + params.id)
       .then((res) => {
+        console.log(res);
         form.reset(res.data);
+        form.setValue("start_time", res.data.startTime);
+        form.setValue("end_time", res.data.endTime);
       })
       .catch((err) => {
         console.log(err);

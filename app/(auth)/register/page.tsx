@@ -22,6 +22,7 @@ import {
 import * as z from "zod";
 import { useRouter } from "next/navigation";
 import api from "@/utils/api";
+import axios from "axios";
 
 const formSchema = z
   .object({
@@ -74,14 +75,19 @@ const Entrar = () => {
   function onSubmit(values: z.infer<typeof formSchema>) {
     setLoading(true);
     console.log(values);
-    const data = {
-      ...values,
+
+    const formData = {
+      email: values.email,
+      password: values.password,
+      startTime: values.start_time,
+      endTime: values.end_time,
       username: values.name,
     };
+
     api
-      .post("/auth/register", data)
+      .post("/auth/register", formData)
       .then((res) => {
-        setLoading(false);
+        console.log(res);
         toast({
           title: "Você foi cadastrado com sucesso!",
         });
@@ -89,12 +95,12 @@ const Entrar = () => {
         form.reset();
       })
       .catch((err) => {
-        setLoading(false);
         console.log(err);
         toast({
           title: "Não foi possível cadastrar",
         });
-      });
+      })
+      .finally(() => setLoading(false));
   }
 
   if (loading)

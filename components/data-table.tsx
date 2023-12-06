@@ -30,6 +30,16 @@ interface DataTableProps<TData, TValue> {
   actions?: React.ReactNode;
   onTableChange?: (table: any) => void;
   onRowClick?: (row: any) => void;
+  pagination?: {
+    page: number;
+    size: number;
+  };
+  setPagination?: React.Dispatch<
+    React.SetStateAction<{
+      page: number;
+      size: number;
+    }>
+  >;
 }
 
 export function DataTable<TData, TValue>({
@@ -38,6 +48,8 @@ export function DataTable<TData, TValue>({
   actions,
   onTableChange,
   onRowClick,
+  pagination,
+  setPagination,
 }: DataTableProps<TData, TValue>): JSX.Element {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [rowSelection, setRowSelection] = React.useState({});
@@ -123,7 +135,11 @@ export function DataTable<TData, TValue>({
         </Table>
       </div>
       <div className="mt-1 rounded-md border p-2">
-        <DataTablePagination table={table} />
+        <DataTablePagination
+          table={table}
+          pagination={pagination}
+          setPagination={setPagination}
+        />
       </div>
     </div>
   );

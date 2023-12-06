@@ -15,19 +15,23 @@ const UsersPage = () => {
   const router = useRouter();
 
   const [barbers, setBarbers] = useState<any>(null);
+  const [pagination, setPagination] = useState({
+    page: 0,
+    size: 10,
+  });
 
   useEffect(() => {
-    const url = `/user`;
+    const url = `/users?page=${pagination.page}&size=${pagination.size}`;
     api
       .get(url)
       .then((response) => {
         console.log(response);
-        setBarbers(response.data);
+        setBarbers(response.data.content);
       })
       .catch((error) => {
         console.log(error);
       });
-  }, []);
+  }, [pagination.page, pagination.size]);
 
   const [table, setTable] = useState<any>(null);
   const handleExport = (table: any) => {
@@ -46,6 +50,8 @@ const UsersPage = () => {
         onRowClick={(row: any) => {
           router.push(`/admin/users/edit/${row.id}`);
         }}
+        pagination={pagination}
+        setPagination={setPagination}
         actions={
           <>
             <Button

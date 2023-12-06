@@ -275,7 +275,7 @@ const CustomerSchedulePage = () => {
 
   useEffect(() => {
     api
-      .get("/user/list")
+      .get("/users")
       .then((res) => {
         console.log(res.data);
         setBarbers(res.data);
