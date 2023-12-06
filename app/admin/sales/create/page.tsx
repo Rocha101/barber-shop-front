@@ -163,16 +163,18 @@ const CreateSale = ({ params }: { params: { id: string } }) => {
       .get(url)
       .then((response) => {
         console.log("response", response);
-        setProducts(response.data);
+        setProducts(response.data.content);
       })
       .catch((error) => {
         console.log(error);
       });
   }, []);
 
-  const filteredProducts = products?.filter((product) =>
-    product.description.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredProducts =
+    products &&
+    products.filter((product) =>
+      product.description.toLowerCase().includes(searchQuery.toLowerCase())
+    );
 
   return (
     <div>
