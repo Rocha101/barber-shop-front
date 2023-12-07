@@ -48,7 +48,7 @@ const EditUser = ({ params }: { params: { id: string } }) => {
       description: values.description,
       userId: JSON.parse(Cookies.get("user") || "{}").id,
     };
-    const url = `/location`;
+    const url = `/locations`;
     api
       .post(url, data)
       .then((res) => {

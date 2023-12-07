@@ -67,7 +67,7 @@ const EditUser = ({ params }: { params: { id: string } }) => {
       userId: JSON.parse(Cookies.get("user") || "{}").id,
     };
     console.log(data);
-    const url = `/product`;
+    const url = `/products`;
     api
       .post(url, data)
       .then((res) => {

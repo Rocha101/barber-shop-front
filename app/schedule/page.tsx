@@ -73,7 +73,7 @@ const formSchema = z.object({
     required_error: "Empresa obrigatória",
   }),
   userId: z.string({
-    required_error: "Profissional obrigatória",
+    required_error: "Profissional obrigatório",
   }),
   locationId: z.string({
     required_error: "Filial obrigatória",
@@ -97,91 +97,40 @@ const CustomerSchedulePage = () => {
   const [services, setServices] = useState<Service[]>([]);
   const [locations, setLocations] = useState<LocationT[]>([]);
   const [barbers, setBarbers] = useState<UserT[]>([]);
+  const [availableTimes, setAvailableTimes] = useState<string[]>([]);
 
   // const freeTimes = ["08:00", "08:30", "09:00", "09:30", "10:00", "10:30"];
-
-  const freeTimes = () => {
-    const selectedBarberEvents = selectedBarber?.events || [];
-    const selectedBarberStartTime = selectedBarber?.start_time;
-    const selectedBarberEndTime = selectedBarber?.end_time;
-
-    if (
-      !selectedBarberStartTime ||
-      !selectedBarberEndTime ||
-      !serviceDuration
-    ) {
-      return [];
-    }
-
-    const [startHour, startMinute] = selectedBarberStartTime
-      .split(":")
-      .map(Number);
-    const [endHour, endMinute] = selectedBarberEndTime.split(":").map(Number);
-
-    const occupiedTimes = new Set();
-
-    selectedBarberEvents.forEach((event) => {
-      const [eventStartHour, eventStartMinute] = event.start_time
-        .split(":")
-        .map(Number);
-      const [eventEndHour, eventEndMinute] = event.end_time
-        .split(":")
-        .map(Number);
-
-      for (let h = eventStartHour; h < eventEndHour; h++) {
-        for (let m = 0; m < 60; m++) {
-          if (
-            (h === eventStartHour && m >= eventStartMinute) ||
-            (h === eventEndHour && m <= eventEndMinute)
-          ) {
-            occupiedTimes.add(`${h}:${m.toString().padStart(2, "0")}`);
-          }
-        }
-      }
-    });
-
-    const availableTimes = [];
-
-    for (let hour = startHour; hour < endHour; hour++) {
-      for (
-        let minute = 0;
-        minute < 60;
-        minute += Number(serviceDuration.split(":")[1])
-      ) {
-        const time = `${hour}:${minute.toString().padStart(2, "0")}`;
-        if (!occupiedTimes.has(time)) {
-          availableTimes.push(time);
-        }
-      }
-    }
-
-    return availableTimes;
-  };
 
   const ProgressPercentage = step * 33.33;
 
   const watchuserId = form.watch("userId");
   const watchAll = form.watch();
 
-  const selectedBarberName = barbers.find(
-    (barber: any) => barber.id === +watchAll.userId
-  )?.username;
+  const selectedBarberName =
+    barbers &&
+    barbers.length > 0 &&
+    barbers.find((barber: any) => barber.id === +watchAll.userId)?.username;
 
-  const selectedServiceName = services.find(
-    (service) => service.id === +watchAll.serviceId
-  )?.description;
+  const selectedServiceName =
+    services &&
+    services.length > 0 &&
+    services.find((service) => service.id === +watchAll.serviceId)?.description;
 
-  const selectedLocationName = locations.find(
-    (location) => location?.id === +watchAll.serviceId
-  )?.description;
+  const selectedLocationName =
+    locations &&
+    locations.length > 0 &&
+    locations.find((location) => location?.id === +watchAll.serviceId)
+      ?.description;
 
-  const selectedBarber = barbers.find(
-    (barber: any) => barber.id === +watchAll.userId
-  );
+  const selectedBarber =
+    barbers &&
+    barbers.length > 0 &&
+    barbers.find((barber: any) => barber.id === +watchAll.userId);
 
-  const serviceDuration = services.find(
-    (service) => service.id === +watchAll.serviceId
-  )?.total_time;
+  const serviceDuration =
+    services &&
+    services.length > 0 &&
+    services.find((service) => service.id === +watchAll.serviceId)?.total_time;
 
   const handleNextStep = async () => {
     const isFirstStepValid = await form.trigger(["username", "email", "phone"]);
@@ -229,7 +178,7 @@ const CustomerSchedulePage = () => {
   };
 
   const onSubmit = () => {
-    const url = `/schedule`;
+    const url = `/schedules`;
 
     const selectedStartTime = selectedTime;
 
@@ -275,10 +224,10 @@ const CustomerSchedulePage = () => {
 
   useEffect(() => {
     api
-      .get("/user/list")
+      .get("/users")
       .then((res) => {
         console.log(res.data);
-        setBarbers(res.data);
+        setBarbers(res.data.content);
       })
       .catch((err) => {
         console.log(err);
@@ -287,27 +236,92 @@ const CustomerSchedulePage = () => {
 
   useEffect(() => {
     api
-      .get("/location/list/barber/" + watchuserId)
+      .get("/locations")
       .then((res) => {
         console.log(res.data);
-        setLocations(res.data);
+        setLocations(res.data.content);
       })
       .catch((err) => {
         console.log(err);
       });
-  }, [form.watch, watchuserId]);
+  }, [watchuserId, form.watch]);
 
   useEffect(() => {
     api
-      .get("/service/list/barber/" + watchuserId)
+      .get("/services")
       .then((res) => {
         console.log(res.data);
-        setServices(res.data);
+        setServices(res.data.content);
       })
       .catch((err) => {
         console.log(err);
       });
-  }, [form.watch, watchuserId]);
+  }, [watchuserId, form.watch]);
+
+  useEffect(() => {
+    const freeTimes = () => {
+      if (!selectedBarber) return [];
+      const selectedBarberEvents = selectedBarber.events || [];
+      const selectedBarberStartTime = selectedBarber.startTime || "08:00";
+      const selectedBarberEndTime = selectedBarber.endTime || "18:00";
+
+      if (
+        !selectedBarberStartTime ||
+        !selectedBarberEndTime ||
+        !serviceDuration
+      ) {
+        return [];
+      }
+
+      const [startHour, startMinute] = selectedBarberStartTime
+        .split(":")
+        .map(Number);
+      const [endHour, endMinute] = selectedBarberEndTime.split(":").map(Number);
+
+      const occupiedTimes = new Set();
+
+      selectedBarberEvents.forEach((event) => {
+        const [eventStartHour, eventStartMinute] = event.startTime
+          .split(":")
+          .map(Number);
+        const [eventEndHour, eventEndMinute] = event.endTime
+          .split(":")
+          .map(Number);
+
+        for (let h = eventStartHour; h < eventEndHour; h++) {
+          for (let m = 0; m < 60; m++) {
+            if (
+              (h === eventStartHour && m >= eventStartMinute) ||
+              (h === eventEndHour && m <= eventEndMinute)
+            ) {
+              occupiedTimes.add(`${h}:${m.toString().padStart(2, "0")}`);
+            }
+          }
+        }
+      });
+
+      const availableTimes = [];
+
+      for (let hour = startHour; hour < endHour; hour++) {
+        for (
+          let minute = 0;
+          minute < 60;
+          minute += Number(serviceDuration.split(":")[1])
+        ) {
+          const time = `${hour}:${minute.toString().padStart(2, "0")}`;
+          if (!occupiedTimes.has(time)) {
+            availableTimes.push(time);
+          }
+        }
+      }
+
+      setAvailableTimes(availableTimes);
+    };
+
+    freeTimes();
+  }, [selectedBarber, serviceDuration]);
+
+  console.log(selectedBarber);
 
   return (
     <div className="h-screen flex flex-col items-center justify-between">
@@ -529,24 +543,31 @@ const CustomerSchedulePage = () => {
                           className=""
                           locale={ptBR}
                         />
-                        <div className="h-full grid grid-cols-3 gap-3 p-4 items-start">
-                          {freeTimes().map((time) => (
-                            <Button
-                              key={time}
-                              className="text-xs"
-                              variant={
-                                selectedTime === time ? "default" : "outline"
-                              }
-                              onClick={(e) => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                handleSelectTime(time);
-                              }}
-                            >
-                              {time}
-                            </Button>
-                          ))}
-                        </div>
+
+                        {availableTimes.length > 0 ? (
+                          <div className="h-full grid grid-cols-3 gap-3 p-4 items-start">
+                            {availableTimes.map((time) => (
+                              <Button
+                                key={time}
+                                className="text-xs"
+                                variant={
+                                  selectedTime === time ? "default" : "outline"
+                                }
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  e.stopPropagation();
+                                  handleSelectTime(time);
+                                }}
+                              >
+                                {time}
+                              </Button>
+                            ))}
+                          </div>
+                        ) : (
+                          <div className="w-full flex items-center justify-center text-xs">
+                            Nenhum horário disponível
+                          </div>
+                        )}
                       </div>
                     </>
                   )}

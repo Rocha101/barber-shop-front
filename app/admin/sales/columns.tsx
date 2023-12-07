@@ -8,28 +8,28 @@ import { Order } from "./sales";
 import formatMoney from "@/lib/moneyMask";
 
 export const columns: ColumnDef<Order>[] = [
+  // {
+  //   accessorKey: "",
+  //   header: "Cliente",
+  //   cell: ({ row }) => {
+  //     const { buyerInfos } = row.original;
+  //     return <p>{buyerInfos[0].name}</p>;
+  //   },
+  // },
   {
-    accessorKey: "",
-    header: "Cliente",
-    cell: ({ row }) => {
-      const { customerInfo } = row.original;
-      return <p>{customerInfo.name}</p>;
-    },
-  },
-  {
-    accessorKey: "created_at",
+    accessorKey: "createdAt",
     header: "Data",
     cell: ({ row }) => {
       return (
-        <p>{new Date(row.original.created_at).toLocaleDateString("pt-Br")}</p>
+        <p>{new Date(row.original.createdAt).toLocaleDateString("pt-Br")}</p>
       );
     },
   },
   {
-    accessorKey: "total_price",
+    accessorKey: "totalPrice",
     header: "Valor total",
     cell: ({ row }) => {
-      return <span>{formatMoney(+row.original.total_price)}</span>;
+      return <span>{formatMoney(+row.original.totalPrice)}</span>;
     },
   },
   /* {

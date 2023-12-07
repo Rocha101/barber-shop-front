@@ -9,20 +9,24 @@ import api from "@/utils/api";
 
 export default function Locations() {
   const [data, setData] = useState<LocationT[]>([]);
+  const [pagination, setPagination] = useState({
+    page: 0,
+    size: 10,
+  });
 
   useEffect(() => {
-    const url = `/location`;
+    const url = `/locations?page=${pagination.page}&size=${pagination.size}`;
 
     api
       .get(url)
       .then((response) => {
         console.log(response);
-        setData(response.data);
+        setData(response.data.content);
       })
       .catch((error) => {
         console.log(error);
       });
-  }, []);
+  }, [pagination.page, pagination.size]);
 
   return (
     <div>
@@ -32,7 +36,12 @@ export default function Locations() {
           <Button>Nova Localidade</Button>
         </Link>
       </div>
-      <DataTable data={data} columns={columns} />
+      <DataTable
+        data={data}
+        columns={columns}
+        pagination={pagination}
+        setPagination={setPagination}
+      />
     </div>
   );
 }

@@ -53,18 +53,23 @@ const SchedulesPage = () => {
     }
   });
 
+  const [pagination, setPagination] = useState({
+    page: 0,
+    size: 10,
+  });
+
   useEffect(() => {
-    const url = `/schedule`;
+    const url = `/schedules?page=${pagination.page}&size=${pagination.size}`;
     api
       .get(url)
       .then((response) => {
         console.log(response.data);
-        setEvents(response.data);
+        setEvents(response.data.content);
       })
       .catch((error) => {
         console.log(error);
       });
-  }, []);
+  }, [pagination.page, pagination.size]);
 
   return (
     <div className="flex flex-col gap-2">
@@ -98,7 +103,12 @@ const SchedulesPage = () => {
               </SelectContent>
             </Select>
           </div>
-          <DataTable data={filteredEvents} columns={columns} />
+          <DataTable
+            data={filteredEvents}
+            columns={columns}
+            pagination={pagination}
+            setPagination={setPagination}
+          />
         </TabsContent>
       </Tabs>
     </div>

@@ -38,13 +38,14 @@ const EditService = () => {
   function onSubmit(values: z.infer<typeof formSchema>) {
     const user = JSON.parse(Cookies.get("user") || "{}");
     const data = {
-      ...values,
+      description: values.description,
       price: Number(values.price),
       userId: user.id,
+      totalTime: values.total_time,
     };
     console.log(data);
     api
-      .post("/service", data)
+      .post("/services", data)
       .then((res) => {
         console.log(res);
         router.push("/admin/services");
