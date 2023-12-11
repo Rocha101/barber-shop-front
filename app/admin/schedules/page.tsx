@@ -59,12 +59,12 @@ const SchedulesPage = () => {
   });
 
   useEffect(() => {
-    const url = `/schedules?page=${pagination.page}&size=${pagination.size}`;
+    const url = `/schedules`;
     api
       .get(url)
       .then((response) => {
         console.log(response.data);
-        setEvents(response.data.content);
+        setEvents(response.data);
       })
       .catch((error) => {
         console.log(error);

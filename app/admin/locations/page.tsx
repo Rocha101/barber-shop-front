@@ -15,13 +15,13 @@ export default function Locations() {
   });
 
   useEffect(() => {
-    const url = `/locations?page=${pagination.page}&size=${pagination.size}`;
+    const url = `/locations`;
 
     api
       .get(url)
       .then((response) => {
         console.log(response);
-        setData(response.data.content);
+        setData(response.data);
       })
       .catch((error) => {
         console.log(error);

@@ -227,7 +227,7 @@ const CustomerSchedulePage = () => {
       .get("/users")
       .then((res) => {
         console.log(res.data);
-        setBarbers(res.data.content);
+        setBarbers(res.data);
       })
       .catch((err) => {
         console.log(err);
@@ -239,7 +239,7 @@ const CustomerSchedulePage = () => {
       .get("/locations")
       .then((res) => {
         console.log(res.data);
-        setLocations(res.data.content);
+        setLocations(res.data);
       })
       .catch((err) => {
         console.log(err);
@@ -251,7 +251,7 @@ const CustomerSchedulePage = () => {
       .get("/services")
       .then((res) => {
         console.log(res.data);
-        setServices(res.data.content);
+        setServices(res.data);
       })
       .catch((err) => {
         console.log(err);

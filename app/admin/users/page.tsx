@@ -21,12 +21,12 @@ const UsersPage = () => {
   });
 
   useEffect(() => {
-    const url = `/users?page=${pagination.page}&size=${pagination.size}`;
+    const url = `/users`;
     api
       .get(url)
       .then((response) => {
         console.log(response);
-        setBarbers(response.data.content);
+        setBarbers(response.data);
       })
       .catch((error) => {
         console.log(error);

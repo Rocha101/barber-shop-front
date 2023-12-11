@@ -163,7 +163,7 @@ const CreateSale = ({ params }: { params: { id: string } }) => {
       .get(url)
       .then((response) => {
         console.log("response", response);
-        setProducts(response.data.content);
+        setProducts(response.data);
       })
       .catch((error) => {
         console.log(error);

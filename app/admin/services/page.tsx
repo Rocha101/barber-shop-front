@@ -20,10 +20,10 @@ const Services = () => {
 
   useEffect(() => {
     api
-      .get(`/services?page=${pagination.page}&size=${pagination.size}`)
+      .get(`/services`)
       .then((res) => {
         console.log(res.data);
-        setService(res.data.content);
+        setService(res.data);
       })
       .catch((err) => {
         console.log(err);

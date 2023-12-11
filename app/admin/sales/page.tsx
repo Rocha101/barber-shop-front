@@ -15,12 +15,12 @@ export default function Sales() {
   });
 
   useEffect(() => {
-    const url = `/sales?page=${pagination.page}&size=${pagination.size}`;
+    const url = `/sales`;
     api
       .get(url)
       .then((response) => {
         console.log(response);
-        setData(response.data.content);
+        setData(response.data);
       })
       .catch((error) => {
         console.log(error);
