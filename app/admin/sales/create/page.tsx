@@ -46,7 +46,7 @@ interface Sale {
   }[];
   products: any[];
   userId: string;
-  totalPrice?: number;
+  total_price?: number;
 }
 
 const formSchema = z.object({
@@ -84,7 +84,7 @@ const CreateSale = ({ params }: { params: { id: string } }) => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [data, setData] = useState([]);
 
-  const totalPriceSum = (products: Product[]) => {
+  const total_priceSum = (products: Product[]) => {
     return products.reduce(
       (sum, product) => sum + product.price * product.quantity,
       0
@@ -104,7 +104,7 @@ const CreateSale = ({ params }: { params: { id: string } }) => {
           phone: values.phone,
         },
       ],
-      totalPrice: totalPriceSum(selectedProducts || []),
+      total_price: total_priceSum(selectedProducts || []),
       products: selectedProducts || [],
       userId: JSON.parse(Cookies.get("user") || "{}").id,
     };
@@ -317,7 +317,7 @@ const CreateSale = ({ params }: { params: { id: string } }) => {
                         Total
                       </TableCell>
                       <TableCell>
-                        R$ {totalPriceSum(selectedProducts || []).toFixed(2)}
+                        R$ {total_priceSum(selectedProducts || []).toFixed(2)}
                       </TableCell>
                       <TableCell>
                         {totalQuantitySum(selectedProducts || [])}

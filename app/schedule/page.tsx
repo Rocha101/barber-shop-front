@@ -262,8 +262,8 @@ const CustomerSchedulePage = () => {
     const freeTimes = () => {
       if (!selectedBarber) return [];
       const selectedBarberEvents = selectedBarber.events || [];
-      const selectedBarberStartTime = selectedBarber.startTime || "08:00";
-      const selectedBarberEndTime = selectedBarber.endTime || "18:00";
+      const selectedBarberStartTime = selectedBarber.start_time || "08:00";
+      const selectedBarberEndTime = selectedBarber.end_time || "18:00";
 
       if (
         !selectedBarberStartTime ||
@@ -281,10 +281,10 @@ const CustomerSchedulePage = () => {
       const occupiedTimes = new Set();
 
       selectedBarberEvents.forEach((event) => {
-        const [eventStartHour, eventStartMinute] = event.startTime
+        const [eventStartHour, eventStartMinute] = event.start_time
           .split(":")
           .map(Number);
-        const [eventEndHour, eventEndMinute] = event.endTime
+        const [eventEndHour, eventEndMinute] = event.end_time
           .split(":")
           .map(Number);
 

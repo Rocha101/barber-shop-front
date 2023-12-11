@@ -17,19 +17,19 @@ export const columns: ColumnDef<Order>[] = [
   //   },
   // },
   {
-    accessorKey: "createdAt",
+    accessorKey: "created_at",
     header: "Data",
     cell: ({ row }) => {
       return (
-        <p>{new Date(row.original.createdAt).toLocaleDateString("pt-Br")}</p>
+        <p>{new Date(row.original.created_at).toLocaleDateString("pt-Br")}</p>
       );
     },
   },
   {
-    accessorKey: "totalPrice",
+    accessorKey: "total_price",
     header: "Valor total",
     cell: ({ row }) => {
-      return <span>{formatMoney(+row.original.totalPrice)}</span>;
+      return <span>{formatMoney(+row.original.total_price)}</span>;
     },
   },
   /* {

@@ -152,7 +152,7 @@ const ReportsPage = () => {
           <ResponsiveContainer width="100%" height={350}>
             <BarChart data={data?.sales}>
               <XAxis
-                dataKey="createdAt"
+                dataKey="created_at"
                 fontSize={12}
                 tickLine={false}
                 axisLine={false}

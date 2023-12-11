@@ -13,7 +13,7 @@ export const columns: ColumnDef<Service>[] = [
     header: "Descrição",
   },
   {
-    accessorKey: "totalTime",
+    accessorKey: "total_time",
     header: "Tempo total",
   },
   {

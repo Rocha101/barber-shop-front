@@ -79,8 +79,8 @@ const Entrar = () => {
     const formData = {
       email: values.email,
       password: values.password,
-      startTime: values.start_time,
-      endTime: values.end_time,
+      start_time: values.start_time,
+      end_time: values.end_time,
       username: values.name,
     };
 

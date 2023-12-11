@@ -19,9 +19,9 @@ export interface Order {
   id: number;
   customerInfoId: number;
   userId: number;
-  totalPrice: number;
-  createdAt: string;
-  updatedAt: string;
+  total_price: number;
+  created_at: string;
+  updated_at: string;
   buyerInfos: CustomerInfo[];
   products: any[];
   user: User;

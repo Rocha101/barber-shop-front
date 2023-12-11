@@ -75,8 +75,8 @@ const EditUser = ({ params }: { params: { id: string } }) => {
     const formData = {
       email: values.email,
       password: values.password,
-      startTime: values.start_time,
-      endTime: values.end_time,
+      start_time: values.start_time,
+      end_time: values.end_time,
       username: values.username,
       phone: values.phone,
     };
@@ -105,8 +105,8 @@ const EditUser = ({ params }: { params: { id: string } }) => {
       .then((res) => {
         console.log(res);
         form.reset(res.data);
-        form.setValue("start_time", res.data.startTime);
-        form.setValue("end_time", res.data.endTime);
+        form.setValue("start_time", res.data.start_time);
+        form.setValue("end_time", res.data.end_time);
       })
       .catch((err) => {
         console.log(err);

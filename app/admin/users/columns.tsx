@@ -61,11 +61,11 @@ export const columns: ColumnDef<Users>[] = [
     header: "Telefone",
   },
   {
-    accessorKey: "startTime",
+    accessorKey: "start_time",
     header: "Horário inicial",
   },
   {
-    accessorKey: "endTime",
+    accessorKey: "end_time",
     header: "Horário final",
   },
   {

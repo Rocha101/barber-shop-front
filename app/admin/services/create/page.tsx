@@ -41,7 +41,7 @@ const EditService = () => {
       description: values.description,
       price: Number(values.price),
       userId: user.id,
-      totalTime: values.total_time,
+      total_time: values.total_time,
     };
     console.log(data);
     api
